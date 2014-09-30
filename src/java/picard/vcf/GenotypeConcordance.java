@@ -45,12 +45,11 @@ import picard.cmdline.Usage;
 import picard.vcf.GenotypeConcordanceStates.*;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Calculates the concordance between genotype data for two samples in two different VCFs - one representing the truth (or reference)
@@ -360,60 +359,72 @@ public class GenotypeConcordance extends CommandLineProgram {
                 throw new IllegalStateException("Ref alleles mismatch between: " + truthContext + " and " + callContext);
             }
         }
-        final Set<Allele> truthAltAlleles = new HashSet<Allele>();
+
+        final OrderedSet<Allele> allAlleles = new OrderedSet<Allele>();
+
+
+        if (truthContext != null || callContext != null) {
+            allAlleles.smartAdd(truthContext == null ? callContext.getReference() : truthContext.getReference()); // zeroth allele;
+        }
+
+        if (truthState == null ) {
+            allAlleles.smartAdd(truthGenotype.getAllele(0));
+            allAlleles.smartAdd(truthGenotype.getAllele(1));
+        }
+
+        /**
+         *  if either of the call alleles is in allAlleles, with index > 1, we need to make sure that allele has index 1.
+         *  this is because of the following situations:
+         *
+         *      REF TRUTH   CALL-GT TRUTH-STATE     CALL-STATE
+         *      A   C/G     C/A     HET_VAR1_VAR2   HET_REF_VAR1
+         *      A   G/C     C/A     HET_VAR1_VAR2   HET_REF_VAR1
+         *      A   G/C     G/A     HET_VAR1_VAR2   HET_REF_VAR1
+         *      A   G/C     G/A     HET_VAR1_VAR2   HET_REF_VAR1
+         *
+         *
+         *  so, in effect, the order of the alleles in the TRUTH doesn't determine the assignment of allele to Var1 and Var2,
+         *  only once the call is known can this assignment be made.
+         *
+         */
+
+        if (callState == null) {
+
+            if(allAlleles.indexOf(callGenotype.getAllele(0))>1 || allAlleles.indexOf(callGenotype.getAllele(1))>1){
+                allAlleles.remove(2);
+                allAlleles.remove(1);
+                allAlleles.smartAdd(truthGenotype.getAllele(1));
+                allAlleles.smartAdd(truthGenotype.getAllele(0));
+            }
+
+
+            allAlleles.smartAdd(callGenotype.getAllele(0));
+            allAlleles.smartAdd(callGenotype.getAllele(1));
+        }
 
         // Truth
         if (null == truthState) {
-            final Allele allele0 = truthGenotype.getAllele(0);
-            final Allele allele1 = truthGenotype.getAllele(1);
-            if (allele0.isNonReference()) truthAltAlleles.add(allele0);
-            if (allele1.isNonReference()) truthAltAlleles.add(allele1);
 
-            if (allele0.isReference()) {
-                if (allele1.isReference()) truthState = TruthState.HOM_REF;
-                else truthState = TruthState.HET_REF_VAR1;
-            }
-            else {
-                if (allele1.isReference()) truthState = TruthState.HET_REF_VAR1;
-                else truthState = (allele0.equals(allele1)) ? TruthState.HOM_VAR1 : TruthState.HET_VAR1_VAR2;
+            final int allele0idx= allAlleles.indexOf(truthGenotype.getAllele(0));
+            final int allele1idx= allAlleles.indexOf(truthGenotype.getAllele(1));
+
+            if (allele0idx == allele1idx){ //HOM
+                truthState = TruthState.getHom(allele0idx);
+            } else { //HET
+                truthState = TruthState.getVar(allele0idx, allele1idx);
             }
         }
 
         // Call
         if (null == callState) {
-            final Allele allele0 = callGenotype.getAllele(0);
-            final Allele allele1 = callGenotype.getAllele(1);
 
-            if (allele0.isReference() || allele1.isReference()) {
-                if (allele0.isReference() && allele1.isReference()) callState = CallState.HOM_REF;
-                else {
-                    // Call State is HET_REF_VARn.  Determine n by presence or absence of VARs in truthAltAlleles
-                    final Allele nonRefAllele = allele0.isReference() ? allele1 : allele0;
-                    if (truthAltAlleles.isEmpty()) callState = CallState.HET_REF_VAR1;
-                    else if (truthAltAlleles.contains(nonRefAllele)) callState = CallState.HET_REF_VAR1;
-                    else callState = (truthAltAlleles.size() == 1) ? CallState.HET_REF_VAR2 : CallState.HET_REF_VAR3;
-                }
-            }
-            else {
-                // BOTH allele0 and allele1 are nonReference
-                if (allele0.equals(allele1)) {      // HOM_VARn
-                    if (truthAltAlleles.isEmpty()) callState = CallState.HOM_VAR1;
-                    else if (truthAltAlleles.contains(allele0)) callState = CallState.HOM_VAR1;
-                    else callState = (truthAltAlleles.size() == 1) ? CallState.HOM_VAR2 : CallState.HOM_VAR3;
-                }
-                else {      // HET_VARn_VARn
-                    if (truthAltAlleles.isEmpty()) callState = CallState.HET_VAR1_VAR2;
-                    else if (truthAltAlleles.contains(allele0)) {
-                        if (truthAltAlleles.contains(allele1)) callState = CallState.HET_VAR1_VAR2;
-                        else callState = (truthAltAlleles.size() == 1) ? CallState.HET_VAR1_VAR2 : CallState.HET_VAR1_VAR3;
-                    }
-                    else {
-                        if (truthAltAlleles.contains(allele1)) {
-                            callState = (truthAltAlleles.size() == 1) ? CallState.HET_VAR1_VAR2 : CallState.HET_VAR1_VAR3;
-                        }
-                        else callState = CallState.HET_VAR3_VAR4;
-                    }
-                }
+            final int allele0idx = allAlleles.indexOf(callGenotype.getAllele(0));
+            final int allele1idx = allAlleles.indexOf(callGenotype.getAllele(1));
+
+            if (allele0idx == allele1idx) { //HOM
+                callState = CallState.getHom(allele0idx);
+            } else { //HET
+                callState = CallState.getHet(allele0idx, allele1idx);
             }
 
             if (null == callState) {
@@ -422,6 +433,24 @@ public class GenotypeConcordance extends CommandLineProgram {
         }
 
         return new TruthAndCallStates(truthState, callState);
+    }
+}
+
+/** like a list, but if you ask for an index of an item, it will first add that item.
+also, same item cannot be added more than once (like a set)
+ */
+class OrderedSet<T> extends ArrayList<T> {
+
+    public int smartIndexOf(final T o) {
+        smartAdd(o);
+        return super.indexOf(o);
+    }
+
+    public boolean smartAdd(final T o) {
+        if (!this.contains(o)) {
+            return add(o);
+        }
+        return false;
     }
 }
 
