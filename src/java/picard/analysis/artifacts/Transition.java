@@ -36,13 +36,6 @@ enum Transition {
         return transitionOf((char) SequenceUtil.complement((byte) this.ref), (char) SequenceUtil.complement((byte) this.call));
     }
 
-    /**
-     * Return the ref:ref transition corresponding to this ref:alt transition.
-     */
-    public Transition matchingRef() {
-        return transitionOf(this.ref, this.ref);
-    }
-
     public char ref() { return this.ref; }
 
     public char call() { return this.call; }

@@ -196,12 +196,22 @@ public class CollectSequencingArtifactMetrics extends SinglePassSamProgram {
             throw new PicardException("Record contains library that is missing from header: " + library);
         }
 
+        // get the ArtifactCounter for this library
+        final ArtifactCounter counter = artifactCounters.get(library);
+
         // iterate over aligned positions
         for (final AlignmentBlock block : rec.getAlignmentBlocks()) {
             for (int offset = 0; offset < block.getLength(); offset++) {
                 // remember, these are 1-based!
                 final int readPos = block.getReadStart() + offset;
                 final int refPos = block.getReferenceStart() + offset;
+
+                // skip low BQ sites
+                if (failsBaseQualityCutoff(readPos, rec)) continue;
+
+                // skip N bases in read
+                final char readBase = Character.toUpperCase((char) rec.getReadBases()[readPos - 1]);
+                if (readBase == 'N') continue;
 
                 /**
                  * Skip regions outside of intervals.
@@ -225,15 +235,8 @@ public class CollectSequencingArtifactMetrics extends SinglePassSamProgram {
                 final String context = StringUtil.bytesToString(ref.getBases(), contextStartIndex, contextFullLength).toUpperCase();
                 if (context.contains("N")) continue;
 
-                // skip low BQ sites
-                if (failsBaseQualityCutoff(readPos, rec)) continue;
-
-                // skip N bases in read
-                final char readBase = Character.toUpperCase((char) rec.getReadBases()[readPos - 1]);
-                if (readBase == 'N') continue;
-
                 // count the base!
-                artifactCounters.get(library).countRecord(context, readBase, rec);
+                counter.countRecord(context, readBase, rec);
             }
         }
     }

@@ -20,27 +20,20 @@ class ContextAccumulator {
 
     // are the PE reads expected to face the same direction?
     private final boolean expectedTandemReads;
-    private final Map<Transition, Map<String, AlignmentAccumulator>> artifactMap;
+    private final Map<String, AlignmentAccumulator[]> artifactMap;
 
     public ContextAccumulator(final Set<String> contexts, final boolean expectedTandemReads) {
         this.expectedTandemReads = expectedTandemReads;
         this.artifactMap = new HashMap<>();
-        for (final Transition transition : Transition.values()) {
-            this.artifactMap.put(transition, new HashMap<String, AlignmentAccumulator>());
-        }
         for (final String context : contexts) {
-            final char refBase = getCentralBase(context);
-            for (final byte calledBase : SequenceUtil.VALID_BASES_UPPER) {
-                final Transition transition = Transition.transitionOf(refBase, (char)calledBase);
-                this.artifactMap.get(transition).put(context, new AlignmentAccumulator());
-            }
+            final AlignmentAccumulator[] aaa = new AlignmentAccumulator[Character.MAX_VALUE];
+            for (byte base : SequenceUtil.VALID_BASES_UPPER) aaa[base] = new AlignmentAccumulator();
+            this.artifactMap.put(context, aaa);
         }
     }
 
     public void countRecord(final String refContext, final char calledBase, final SAMRecord rec) {
-        final char refBase = getCentralBase(refContext);
-        final Transition transition = Transition.transitionOf(refBase, calledBase);
-        this.artifactMap.get(transition).get(refContext).countRecord(rec);
+        this.artifactMap.get(refContext)[calledBase].countRecord(rec);
     }
 
     /**
@@ -48,9 +41,11 @@ class ContextAccumulator {
      */
     public ListMap<Transition, DetailPair> calculateMetrics(final String sampleAlias, final String library) {
         final ListMap<Transition, DetailPair> detailMetricsMap = new ListMap<>();
-        for (final Transition altTransition : Transition.altValues()) {
-            final Transition refTransition = altTransition.matchingRef();
-            for (final String context : new TreeSet<>(this.artifactMap.get(altTransition).keySet())) {
+        for (final String context : new TreeSet<>(this.artifactMap.keySet())) {
+            for (final byte altBase : SequenceUtil.VALID_BASES_UPPER) {
+                final char refBase = getCentralBase(context);
+                final Transition transition = Transition.transitionOf(refBase, (char) altBase);
+
                 // each combination of artifact + context represents a single metric row
                 final PreAdapterDetailMetrics preAdapterDetailMetrics = new PreAdapterDetailMetrics();
                 final BaitBiasDetailMetrics baitBiasDetailMetrics = new BaitBiasDetailMetrics();
@@ -59,20 +54,20 @@ class ContextAccumulator {
                 preAdapterDetailMetrics.SAMPLE_ALIAS = sampleAlias;
                 preAdapterDetailMetrics.LIBRARY = library;
                 preAdapterDetailMetrics.CONTEXT = context;
-                preAdapterDetailMetrics.REF_BASE = altTransition.ref();
-                preAdapterDetailMetrics.ALT_BASE = altTransition.call();
+                preAdapterDetailMetrics.REF_BASE = transition.ref();
+                preAdapterDetailMetrics.ALT_BASE = transition.call();
 
                 baitBiasDetailMetrics.SAMPLE_ALIAS = sampleAlias;
                 baitBiasDetailMetrics.LIBRARY = library;
                 baitBiasDetailMetrics.CONTEXT = context;
-                baitBiasDetailMetrics.REF_BASE = altTransition.ref();
-                baitBiasDetailMetrics.ALT_BASE = altTransition.call();
+                baitBiasDetailMetrics.REF_BASE = transition.ref();
+                baitBiasDetailMetrics.ALT_BASE = transition.call();
 
                 // retrieve all the necessary alignment counters.
-                final AlignmentAccumulator fwdRefAlignments = this.artifactMap.get(refTransition).get(context);
-                final AlignmentAccumulator fwdAltAlignments = this.artifactMap.get(altTransition).get(context);
-                final AlignmentAccumulator revRefAlignments = this.artifactMap.get(refTransition.complement()).get(SequenceUtil.reverseComplement(context));
-                final AlignmentAccumulator revAltAlignments = this.artifactMap.get(altTransition.complement()).get(SequenceUtil.reverseComplement(context));
+                final AlignmentAccumulator fwdRefAlignments = this.artifactMap.get(context)[transition.ref()];
+                final AlignmentAccumulator fwdAltAlignments = this.artifactMap.get(context)[transition.call()];
+                final AlignmentAccumulator revRefAlignments = this.artifactMap.get(SequenceUtil.reverseComplement(context))[transition.complement().ref()];
+                final AlignmentAccumulator revAltAlignments = this.artifactMap.get(SequenceUtil.reverseComplement(context))[transition.complement().call()];
 
                 // categorize observations of pre-adapter artifacts
                 if (expectedTandemReads) {
@@ -100,7 +95,7 @@ class ContextAccumulator {
                 baitBiasDetailMetrics.calculateDerivedStatistics();
 
                 // add the finalized metrics to the map
-                detailMetricsMap.add(altTransition, new DetailPair(preAdapterDetailMetrics, baitBiasDetailMetrics));
+                detailMetricsMap.add(transition, new DetailPair(preAdapterDetailMetrics, baitBiasDetailMetrics));
             }
         }
         return detailMetricsMap;
