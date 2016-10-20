@@ -1,6 +1,5 @@
 package picard.cmdline;
 
-import htsjdk.samtools.Defaults;
 import htsjdk.samtools.util.Log;
 import htsjdk.samtools.util.StringUtil;
 
@@ -105,7 +104,7 @@ public class PicardCommandLine {
         System.exit(new PicardCommandLine().instanceMain(args, getPackageList(), COMMAND_LINE_NAME));
     }
 
-    /** Returns the command line program specified, or prints the usage and exits with exit code 1 **/
+    /** Returns the command line program specified, or prints the summary and exits with exit code 1 **/
     private static CommandLineProgram extractCommandLineProgram(final String[] args, final List<String> packageList, final String commandLineName) {
         /** Get the set of classes that are our command line programs **/
         final ClassFinder classFinder = new ClassFinder();
@@ -242,9 +241,9 @@ public class PicardCommandLine {
                 }
                 if (!commandListOnly) {
                     if (clazz.getSimpleName().length() >= 45) {
-                        builder.append(String.format("%s    %s    %s%s%s\n", KGRN, clazz.getSimpleName(), KCYN, property.usageShort(), KNRM));
+                        builder.append(String.format("%s    %s    %s%s%s\n", KGRN, clazz.getSimpleName(), KCYN, property.oneLineSummary(), KNRM));
                     } else {
-                        builder.append(String.format("%s    %-45s%s%s%s\n", KGRN, clazz.getSimpleName(), KCYN, property.usageShort(), KNRM));
+                        builder.append(String.format("%s    %-45s%s%s%s\n", KGRN, clazz.getSimpleName(), KCYN, property.oneLineSummary(), KNRM));
                     }
                 }
                 else {

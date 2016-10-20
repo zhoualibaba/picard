@@ -52,94 +52,94 @@ public class CommandLineParserTest {
     }
 
     @CommandLineProgramProperties(
-            usage = "Usage: frobnicate [options] input-file output-file\n\nRead input-file, frobnicate it, and write frobnicated results to output-file\n",
-            usageShort = "Read input-file, frobnicate it, and write frobnicated results to output-file"
+            summary = "Usage: frobnicate [options] input-file output-file\n\nRead input-file, frobnicate it, and write frobnicated results to output-file\n",
+            oneLineSummary = "Read input-file, frobnicate it, and write frobnicated results to output-file"
     )
     class FrobnicateOptions {
 
         @PositionalArguments(minElements = 2, maxElements = 2)
         public List<File> positionalArguments = new ArrayList<File>();
 
-        @Option(shortName = "T", doc = "Frobnication threshold setting.")
+        @Argument(shortName = "T", doc = "Frobnication threshold setting.")
         public Integer FROBNICATION_THRESHOLD = 20;
 
-        @Option
+        @Argument
         public FrobnicationFlavor FROBNICATION_FLAVOR;
 
-        @Option(doc = "Allowed shmiggle types.", minElements = 1, maxElements = 3)
+        @Argument(doc = "Allowed shmiggle types.", minElements = 1, maxElements = 3)
         public List<String> SHMIGGLE_TYPE = new ArrayList<String>();
 
-        @Option
+        @Argument
         public Boolean TRUTHINESS;
     }
 
     @CommandLineProgramProperties(
-            usage = "Usage: frobnicate [options] input-file output-file\n\nRead input-file, frobnicate it, and write frobnicated results to output-file\n",
-            usageShort = "Read input-file, frobnicate it, and write frobnicated results to output-file"
+            summary = "Usage: frobnicate [options] input-file output-file\n\nRead input-file, frobnicate it, and write frobnicated results to output-file\n",
+            oneLineSummary = "Read input-file, frobnicate it, and write frobnicated results to output-file"
     )
     class FrobnicateOptionsWithNullList {
 
         @PositionalArguments(minElements = 2, maxElements = 2)
         public List<File> positionalArguments = new ArrayList<File>();
 
-        @Option(shortName = "T", doc = "Frobnication threshold setting.")
+        @Argument(shortName = "T", doc = "Frobnication threshold setting.")
         public Integer FROBNICATION_THRESHOLD = 20;
 
-        @Option
+        @Argument
         public FrobnicationFlavor FROBNICATION_FLAVOR;
 
-        @Option(doc = "Allowed shmiggle types.", minElements = 0, maxElements = 3)
+        @Argument(doc = "Allowed shmiggle types.", minElements = 0, maxElements = 3)
         public List<String> SHMIGGLE_TYPE = new ArrayList<String>();
 
-        @Option
+        @Argument
         public Boolean TRUTHINESS;
     }
 
     @CommandLineProgramProperties(
-            usage = "Usage: framistat [options]\n\nCompute the plebnick of the freebozzle.\n",
-            usageShort = "ompute the plebnick of the freebozzle"
+            summary = "Usage: framistat [options]\n\nCompute the plebnick of the freebozzle.\n",
+            oneLineSummary = "ompute the plebnick of the freebozzle"
     )
     class OptionsWithoutPositional {
         public static final int DEFAULT_FROBNICATION_THRESHOLD = 20;
-        @Option(shortName = "T", doc = "Frobnication threshold setting.")
+        @Argument(shortName = "T", doc = "Frobnication threshold setting.")
         public Integer FROBNICATION_THRESHOLD = DEFAULT_FROBNICATION_THRESHOLD;
 
-        @Option
+        @Argument
         public FrobnicationFlavor FROBNICATION_FLAVOR;
 
-        @Option(doc = "Allowed shmiggle types.", minElements = 1, maxElements = 3)
+        @Argument(doc = "Allowed shmiggle types.", minElements = 1, maxElements = 3)
         public List<String> SHMIGGLE_TYPE = new ArrayList<String>();
 
-        @Option
+        @Argument
         public Boolean TRUTHINESS;
     }
 
     class OptionsWithCaseClash {
-        @Option
+        @Argument
         public String FROB;
-        @Option
+        @Argument
         public String frob;
     }
 
     class OptionsWithSameShortName {
-        @Option(shortName = "SAME_SHORT_NAME", overridable = true, optional = true)
+        @Argument(shortName = "SAME_SHORT_NAME", overridable = true, optional = true)
         public String SAME_SHORT_NAME;
-        @Option(shortName = "SOMETHING_ELSE", overridable = true, optional = true)
+        @Argument(shortName = "SOMETHING_ELSE", overridable = true, optional = true)
         public String DIFF_SHORT_NAME;
     }
 
     class MutexOptions {
-        @Option(mutex = {"M", "N", "Y", "Z"})
+        @Argument(mutex = {"M", "N", "Y", "Z"})
         public String A;
-        @Option(mutex = {"M", "N", "Y", "Z"})
+        @Argument(mutex = {"M", "N", "Y", "Z"})
         public String B;
-        @Option(mutex = {"A", "B", "Y", "Z"})
+        @Argument(mutex = {"A", "B", "Y", "Z"})
         public String M;
-        @Option(mutex = {"A", "B", "Y", "Z"})
+        @Argument(mutex = {"A", "B", "Y", "Z"})
         public String N;
-        @Option(mutex = {"A", "B", "M", "N"})
+        @Argument(mutex = {"A", "B", "M", "N"})
         public String Y;
-        @Option(mutex = {"A", "B", "M", "N"})
+        @Argument(mutex = {"A", "B", "M", "N"})
         public String Z;
 
     }
@@ -554,11 +554,11 @@ public class CommandLineParserTest {
     }
 
     class UninitializedCollectionOptions {
-        @Option
+        @Argument
         public List<String> LIST;
-        @Option
+        @Argument
         public ArrayList<String> ARRAY_LIST;
-        @Option
+        @Argument
         public HashSet<String> HASH_SET;
         @PositionalArguments
         public Collection<File> COLLECTION;
@@ -578,7 +578,7 @@ public class CommandLineParserTest {
     }
 
     class UninitializedCollectionThatCannotBeAutoInitializedOptions {
-        @Option
+        @Argument
         public Set<String> SET;
     }
 
@@ -590,7 +590,7 @@ public class CommandLineParserTest {
     }
 
     class CollectionWithDefaultValuesOptions {
-        @Option
+        @Argument
         public List<String> LIST = CollectionUtil.makeList("foo", "bar");
     }
 
@@ -622,17 +622,17 @@ public class CommandLineParserTest {
     }
 
     @CommandLineProgramProperties(
-            usage = "Class with nested option",
-            usageShort = "Class with nested option"
+            summary = "Class with nested option",
+            oneLineSummary = "Class with nested option"
     )
     class OptionsWithNested {
-        @Option
+        @Argument
         public Integer AN_INT;
         @NestedOptions(doc = "Doc for FROB")
         public OptionsWithoutPositional FROB = new OptionsWithoutPositional();
         @NestedOptions
         public OptionsWithNestedAgain NESTED = new OptionsWithNestedAgain();
-        @Option
+        @Argument
         public String A_STRING;
     }
 
@@ -705,18 +705,18 @@ public class CommandLineParserTest {
     }
 
     @CommandLineProgramProperties(
-            usage = "Class with nested options.",
-            usageShort = "Class with nested options",
+            summary = "Class with nested options.",
+            oneLineSummary = "Class with nested options",
             programGroup = Testing.class,
             omitFromCommandLine = true
     )
     class ClpOptionsWithNested extends CommandLineProgram {
-        @Option
+        @Argument
         public Integer AN_INT;
         @NestedOptions(doc = "This will be ignored")
         public OptionsWithoutPositional FROB = new OptionsWithoutPositional();
 
-        @Option
+        @Argument
         public String A_STRING;
 
         private final ClpOptionsWithNestedAgain NESTED = new ClpOptionsWithNestedAgain();
@@ -743,8 +743,8 @@ public class CommandLineParserTest {
     }
 
     @CommandLineProgramProperties(
-            usage = "Class with nested options again.",
-            usageShort = "Class with nested options again",
+            summary = "Class with nested options again.",
+            oneLineSummary = "Class with nested options again",
             programGroup = Testing.class,
             omitFromCommandLine = true
     )
@@ -809,22 +809,22 @@ public class CommandLineParserTest {
     }
 
     class StaticPropagationParent {
-        @Option
+        @Argument
         public String STRING1 = "String1ParentDefault";
 
-        @Option
+        @Argument
         public String STRING2 = "String2ParentDefault";
 
-        @Option(overridable = true)
+        @Argument(overridable = true)
         public String STRING3 = "String3ParentDefault";
 
-        @Option
+        @Argument
         public String STRING4 = "String4ParentDefault";
 
-        @Option
+        @Argument
         public String STRING5;
 
-        @Option
+        @Argument
         public List<String> COLLECTION;
 
         @NestedOptions
@@ -833,27 +833,27 @@ public class CommandLineParserTest {
 
     class PropagationChild {
         // Parent has default, child does not, should propagate
-        @Option
+        @Argument
         public String STRING1;
 
         // Parent and child have default, should not propagate
-        @Option
+        @Argument
         public String STRING2 = "String2ChildDefault";
 
         // Parent has explicitly set value, child has default, should propagate
-        @Option
+        @Argument
         public String STRING3 = "String3ChildDefault";
 
         // Parent has default, child has explicitly set value, should not propagate
-        @Option
+        @Argument
         public String STRING4;
 
         // Parent and child have explicitly set value, should not propagate
-        @Option
+        @Argument
         public String STRING5;
 
         // Parent has explicitly set value, but collection should not propagate
-        @Option
+        @Argument
         public List<String> COLLECTION;
     }
 
@@ -883,28 +883,28 @@ public class CommandLineParserTest {
     }
 
     @CommandLineProgramProperties(
-            usage = "",
-            usageShort = "",
+            summary = "",
+            oneLineSummary = "",
             programGroup = Testing.class,
             omitFromCommandLine = true
     )
     class DynamicPropagationParent extends CommandLineProgram {
-        @Option
+        @Argument
         public String STRING1 = "String1ParentDefault";
 
-        @Option
+        @Argument
         public String STRING2 = "String2ParentDefault";
 
-        @Option
+        @Argument
         public String STRING3 = "String3ParentDefault";
 
-        @Option
+        @Argument
         public String STRING4 = "String4ParentDefault";
 
-        @Option
+        @Argument
         public String STRING5;
 
-        @Option
+        @Argument
         public List<String> COLLECTION;
 
         public PropagationChild CHILD = new PropagationChild();
@@ -947,10 +947,10 @@ public class CommandLineParserTest {
     }
 
     class NegativePropagationParent {
-        @Option
+        @Argument
         public int STRING1 = 1;
 
-        @Option
+        @Argument
         public List<String> COLLECTION;
 
         @NestedOptions
@@ -969,13 +969,13 @@ public class CommandLineParserTest {
 
     class StaticParent {
 
-        @Option
+        @Argument
         public String STRING1 = "String1ParentDefault";
 
-        @Option
+        @Argument
         public String STRING2 = "String2ParentDefault";
 
-        @Option(overridable = true)
+        @Argument(overridable = true)
         public String STRING3 = "String3ParentDefault";
 
         public void doSomething() {
@@ -985,7 +985,7 @@ public class CommandLineParserTest {
     }
 
     class OverridePropagation extends StaticParent {
-        @Option
+        @Argument
         public String STRING3 = "String3Overriden";
     }
 
@@ -1096,8 +1096,8 @@ public class CommandLineParserTest {
     }
 
     @CommandLineProgramProperties(
-            usage = TestParserFail.USAGE_SUMMARY + TestParserFail.USAGE_DETAILS,
-            usageShort = TestParserFail.USAGE_SUMMARY,
+            summary = TestParserFail.USAGE_SUMMARY + TestParserFail.USAGE_DETAILS,
+            oneLineSummary = TestParserFail.USAGE_SUMMARY,
             programGroup = Testing.class
     )
     protected class TestParserFail extends CommandLineProgram {
@@ -1110,8 +1110,8 @@ public class CommandLineParserTest {
     }
 
     @CommandLineProgramProperties(
-            usage = TestParserSucceed.USAGE_SUMMARY + TestParserSucceed.USAGE_DETAILS,
-            usageShort = TestParserSucceed.USAGE_SUMMARY,
+            summary = TestParserSucceed.USAGE_SUMMARY + TestParserSucceed.USAGE_DETAILS,
+            oneLineSummary = TestParserSucceed.USAGE_SUMMARY,
             programGroup = Testing.class
     )
 

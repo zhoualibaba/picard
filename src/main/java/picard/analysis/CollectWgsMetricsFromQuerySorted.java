@@ -29,7 +29,7 @@ import htsjdk.samtools.metrics.MetricsFile;
 import htsjdk.samtools.util.*;
 import picard.cmdline.CommandLineProgram;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.StandardOptionDefinitions;
 import picard.cmdline.programgroups.Metrics;
 import picard.util.QuerySortedReadPairIteratorUtil;
@@ -46,32 +46,32 @@ import java.util.List;
  */
 @Deprecated
 @CommandLineProgramProperties(
-        usage = "Computes a number of metrics that are useful for evaluating coverage and performance of " +
+        summary = "Computes a number of metrics that are useful for evaluating coverage and performance of " +
                 "sequencing experiments.",
-        usageShort = "Writes sequencing-related metrics for a SAM or BAM file",
+        oneLineSummary = "Writes sequencing-related metrics for a SAM or BAM file",
         programGroup = Metrics.class
 )
 public class CollectWgsMetricsFromQuerySorted extends CommandLineProgram {
 
-    @Option(shortName = StandardOptionDefinitions.INPUT_SHORT_NAME, doc = "Input SAM or BAM file.")
+    @Argument(shortName = StandardOptionDefinitions.INPUT_SHORT_NAME, doc = "Input SAM or BAM file.")
     public File INPUT;
 
-    @Option(shortName = StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc = "Output metrics file.")
+    @Argument(shortName = StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc = "Output metrics file.")
     public File OUTPUT;
 
-    @Option(shortName = "USABLE_MQ", doc = "Minimum mapping quality for a read to contribute to usable coverage.", overridable = true, optional = true)
+    @Argument(shortName = "USABLE_MQ", doc = "Minimum mapping quality for a read to contribute to usable coverage.", overridable = true, optional = true)
     public int MINIMUM_USABLE_MAPPING_QUALITY = 20;
 
-    @Option(shortName = "USABLE_Q", doc = "Minimum base quality for a base to contribute to usable coverage.", overridable = true, optional = true)
+    @Argument(shortName = "USABLE_Q", doc = "Minimum base quality for a base to contribute to usable coverage.", overridable = true, optional = true)
     public int MINIMUM_USABLE_BASE_QUALITY = 20;
 
-    @Option(shortName = "RAW_MQ", doc = "Minimum mapping quality for a read to contribute to raw coverage.", overridable = true, optional = true)
+    @Argument(shortName = "RAW_MQ", doc = "Minimum mapping quality for a read to contribute to raw coverage.", overridable = true, optional = true)
     public int MINIMUM_RAW_MAPPING_QUALITY = 0;
 
-    @Option(shortName = "RAW_Q", doc = "Minimum base quality for a base to contribute to raw coverage.", overridable = true, optional = true)
+    @Argument(shortName = "RAW_Q", doc = "Minimum base quality for a base to contribute to raw coverage.", overridable = true, optional = true)
     public int MINIMUM_RAW_BASE_QUALITY = 3;
 
-    @Option(doc = "The number of bases in the genome build of the input file to be used for calculating MEAN_COVERAGE. If not provided, we will assume that ALL bases in the genome should be used (including e.g. Ns)", overridable = true, optional = true)
+    @Argument(doc = "The number of bases in the genome build of the input file to be used for calculating MEAN_COVERAGE. If not provided, we will assume that ALL bases in the genome should be used (including e.g. Ns)", overridable = true, optional = true)
     public Long GENOME_TERRITORY = null;
 
     private final Log log = Log.getInstance(CollectWgsMetricsFromQuerySorted.class);

@@ -25,7 +25,7 @@
 package picard.analysis.directed;
 
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.programgroups.Metrics;
 
 import static picard.cmdline.StandardOptionDefinitions.MINIMUM_MAPPING_QUALITY_SHORT_NAME;
@@ -37,23 +37,23 @@ import static picard.cmdline.StandardOptionDefinitions.MINIMUM_MAPPING_QUALITY_S
  */
 
 @CommandLineProgramProperties(
-        usage = "DEPRECATED: Use CollectHsMetrics instead. Calculates a set of Hybrid Selection specific metrics from an aligned SAM" +
+        summary = "DEPRECATED: Use CollectHsMetrics instead. Calculates a set of Hybrid Selection specific metrics from an aligned SAM" +
                 "or BAM file. If a reference sequence is provided, AT/GC dropout metrics will " +
                 "be calculated, and the PER_TARGET_COVERAGE option can be used to output GC and " +
                 "mean coverage information for every target.",
-        usageShort = "DEPRECATED: Use CollectHsMetrics instead.",
+        oneLineSummary = "DEPRECATED: Use CollectHsMetrics instead.",
         programGroup = Metrics.class
 )
 @Deprecated
 public class CalculateHsMetrics extends CollectHsMetrics {
 
-    @Option(shortName = MINIMUM_MAPPING_QUALITY_SHORT_NAME, doc = "Minimum mapping quality for a read to contribute coverage.", overridable = true)
+    @Argument(shortName = MINIMUM_MAPPING_QUALITY_SHORT_NAME, doc = "Minimum mapping quality for a read to contribute coverage.", overridable = true)
     public int MINIMUM_MAPPING_QUALITY = 1;
 
-    @Option(shortName = "Q", doc = "Minimum base quality for a base to contribute coverage.", overridable = true)
+    @Argument(shortName = "Q", doc = "Minimum base quality for a base to contribute coverage.", overridable = true)
     public int MINIMUM_BASE_QUALITY = 0;
 
-    @Option(doc = "True if we are to clip overlapping reads, false otherwise.", optional=true)
+    @Argument(doc = "True if we are to clip overlapping reads, false otherwise.", optional=true)
     public boolean CLIP_OVERLAPPING_READS = false;
 
 }

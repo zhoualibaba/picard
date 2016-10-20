@@ -38,7 +38,7 @@ import htsjdk.samtools.util.ProgressLogger;
 import htsjdk.samtools.util.SequenceUtil;
 import picard.PicardException;
 import picard.cmdline.CommandLineProgram;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.StandardOptionDefinitions;
 
 import java.io.File;
@@ -53,17 +53,17 @@ import java.util.Collection;
  * @author Tim Fennell
  */
 public abstract class SinglePassSamProgram extends CommandLineProgram {
-    @Option(shortName = StandardOptionDefinitions.INPUT_SHORT_NAME, doc = "Input SAM or BAM file.")
+    @Argument(shortName = StandardOptionDefinitions.INPUT_SHORT_NAME, doc = "Input SAM or BAM file.")
     public File INPUT;
 
-    @Option(shortName = "O", doc = "File to write the output to.")
+    @Argument(shortName = "O", doc = "File to write the output to.")
     public File OUTPUT;
 
-    @Option(doc = "If true (default), then the sort order in the header file will be ignored.",
+    @Argument(doc = "If true (default), then the sort order in the header file will be ignored.",
             shortName = StandardOptionDefinitions.ASSUME_SORTED_SHORT_NAME)
     public boolean ASSUME_SORTED = true;
 
-    @Option(doc = "Stop after processing N reads, mainly for debugging.")
+    @Argument(doc = "Stop after processing N reads, mainly for debugging.")
     public long STOP_AFTER = 0;
 
     private static final Log log = Log.getInstance(SinglePassSamProgram.class);

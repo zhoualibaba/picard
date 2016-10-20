@@ -3,7 +3,6 @@ package picard.util;
 import htsjdk.samtools.SAMFileHeader;
 import htsjdk.samtools.SAMSequenceDictionary;
 import htsjdk.samtools.SAMSequenceRecord;
-import htsjdk.samtools.SamReaderFactory;
 import htsjdk.samtools.util.CloserUtil;
 import htsjdk.samtools.util.IOUtil;
 import htsjdk.samtools.util.Interval;
@@ -20,7 +19,7 @@ import htsjdk.variant.utils.SAMSequenceDictionaryExtractor;
 import picard.PicardException;
 import picard.cmdline.CommandLineProgram;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.StandardOptionDefinitions;
 import picard.cmdline.programgroups.Intervals;
 
@@ -31,8 +30,8 @@ import java.io.IOException;
  * @author nhomer
  */
 @CommandLineProgramProperties(
-        usage = BedToIntervalList.USAGE_SUMMARY + BedToIntervalList.USAGE_DETAILS,
-        usageShort = BedToIntervalList.USAGE_SUMMARY,
+        summary = BedToIntervalList.USAGE_SUMMARY + BedToIntervalList.USAGE_DETAILS,
+        oneLineSummary = BedToIntervalList.USAGE_SUMMARY,
         programGroup = Intervals.class
 )
 public class BedToIntervalList extends CommandLineProgram {
@@ -78,19 +77,19 @@ public class BedToIntervalList extends CommandLineProgram {
             "<br /> <br /> "+
             "<hr />"
             ;
-    @Option(shortName = StandardOptionDefinitions.INPUT_SHORT_NAME, doc = "The input BED file")
+    @Argument(shortName = StandardOptionDefinitions.INPUT_SHORT_NAME, doc = "The input BED file")
     public File INPUT;
 
-    @Option(shortName = StandardOptionDefinitions.SEQUENCE_DICTIONARY_SHORT_NAME, doc = "The sequence dictionary")
+    @Argument(shortName = StandardOptionDefinitions.SEQUENCE_DICTIONARY_SHORT_NAME, doc = "The sequence dictionary")
     public File SEQUENCE_DICTIONARY;
 
-    @Option(shortName = StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc = "The output Picard Interval List")
+    @Argument(shortName = StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc = "The output Picard Interval List")
     public File OUTPUT;
 
-    @Option(doc="If true, sort the output interval list before writing it.")
+    @Argument(doc="If true, sort the output interval list before writing it.")
     public boolean SORT = true;
 
-    @Option(doc="If true, unique the output interval list by merging overlapping regions, before writing it (implies sort=true).")
+    @Argument(doc="If true, unique the output interval list by merging overlapping regions, before writing it (implies sort=true).")
     public boolean UNIQUE = false;
 
     final Log LOG = Log.getInstance(getClass());

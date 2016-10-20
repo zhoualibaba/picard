@@ -3,7 +3,7 @@ package picard.vcf;
 import htsjdk.samtools.util.BlockCompressedInputStream;import htsjdk.samtools.util.BlockCompressedOutputStream;import htsjdk.samtools.util.BlockCompressedStreamConstants;import htsjdk.samtools.util.CloseableIterator;import htsjdk.samtools.util.CloserUtil;import htsjdk.samtools.util.CollectionUtil;import htsjdk.samtools.util.RuntimeIOException;import picard.PicardException;
 import picard.cmdline.CommandLineProgram;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.StandardOptionDefinitions;
 import htsjdk.samtools.util.IOUtil;
 import htsjdk.samtools.util.Log;
@@ -35,17 +35,17 @@ import java.util.TreeSet;
  * @author Tim Fennell
  */
 @CommandLineProgramProperties(
-        usage = "Gathers multiple VCF files from a scatter operation into a single VCF file. Input files " +
+        summary = "Gathers multiple VCF files from a scatter operation into a single VCF file. Input files " +
                 "must be supplied in genomic order and must not have events at overlapping positions.",
-        usageShort = "Gathers multiple VCF files from a scatter operation into a single VCF file",
+        oneLineSummary = "Gathers multiple VCF files from a scatter operation into a single VCF file",
         programGroup = VcfOrBcf.class
 )
 public class GatherVcfs extends CommandLineProgram {
 
-    @Option(shortName=StandardOptionDefinitions.INPUT_SHORT_NAME,  doc="Input VCF file(s).")
+    @Argument(shortName=StandardOptionDefinitions.INPUT_SHORT_NAME,  doc="Input VCF file(s).")
 	public List<File> INPUT;
 
-    @Option(shortName=StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc="Output VCF file.")
+    @Argument(shortName=StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc="Output VCF file.")
 	public File OUTPUT;
 
     private static final Log log = Log.getInstance(GatherVcfs.class);

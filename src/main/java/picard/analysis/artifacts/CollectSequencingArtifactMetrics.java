@@ -21,7 +21,7 @@ import htsjdk.samtools.util.StringUtil;
 import picard.PicardException;
 import picard.analysis.SinglePassSamProgram;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.programgroups.Metrics;
 import picard.util.DbSnpBitSetUtil;
 import picard.analysis.artifacts.SequencingArtifactMetrics.*;
@@ -54,8 +54,8 @@ import static picard.cmdline.StandardOptionDefinitions.MINIMUM_MAPPING_QUALITY_S
  *
  */
 @CommandLineProgramProperties(
-        usage = CollectSequencingArtifactMetrics.USAGE_SUMMARY + CollectSequencingArtifactMetrics.USAGE_DETAILS,
-        usageShort = CollectSequencingArtifactMetrics.USAGE_SUMMARY,
+        summary = CollectSequencingArtifactMetrics.USAGE_SUMMARY + CollectSequencingArtifactMetrics.USAGE_DETAILS,
+        oneLineSummary = CollectSequencingArtifactMetrics.USAGE_SUMMARY,
         programGroup = Metrics.class
 )
 public class CollectSequencingArtifactMetrics extends SinglePassSamProgram {
@@ -97,49 +97,49 @@ static final String USAGE_DETAILS = "<p>This tool examines two sources of sequen
 "for complete descriptions of the output metrics produced by this tool. "+
 "<hr />"
 ;
-    @Option(doc = "An optional list of intervals to restrict analysis to.", optional = true)
+    @Argument(doc = "An optional list of intervals to restrict analysis to.", optional = true)
     public File INTERVALS;
 
-    @Option(doc = "VCF format dbSNP file, used to exclude regions around known polymorphisms from analysis.", optional = true)
+    @Argument(doc = "VCF format dbSNP file, used to exclude regions around known polymorphisms from analysis.", optional = true)
     public File DB_SNP;
 
-    @Option(shortName = "Q", doc = "The minimum base quality score for a base to be included in analysis.")
+    @Argument(shortName = "Q", doc = "The minimum base quality score for a base to be included in analysis.")
     public int MINIMUM_QUALITY_SCORE = 20;
 
-    @Option(shortName = MINIMUM_MAPPING_QUALITY_SHORT_NAME, doc = "The minimum mapping quality score for a base to be included in analysis.")
+    @Argument(shortName = MINIMUM_MAPPING_QUALITY_SHORT_NAME, doc = "The minimum mapping quality score for a base to be included in analysis.")
     public int MINIMUM_MAPPING_QUALITY = 30;
 
-    @Option(shortName = "MIN_INS", doc = "The minimum insert size for a read to be included in analysis.")
+    @Argument(shortName = "MIN_INS", doc = "The minimum insert size for a read to be included in analysis.")
     public int MINIMUM_INSERT_SIZE = 60;
 
-    @Option(shortName = "MAX_INS", doc = "The maximum insert size for a read to be included in analysis. Set to 0 to have no maximum.")
+    @Argument(shortName = "MAX_INS", doc = "The maximum insert size for a read to be included in analysis. Set to 0 to have no maximum.")
     public int MAXIMUM_INSERT_SIZE = 600;
 
-    @Option(shortName = "UNPAIRED", doc = "Include unpaired reads. If set to true then all paired reads will be included as well - " +
+    @Argument(shortName = "UNPAIRED", doc = "Include unpaired reads. If set to true then all paired reads will be included as well - " +
             "MINIMUM_INSERT_SIZE and MAXIMUM_INSERT_SIZE will be ignored.")
     public boolean INCLUDE_UNPAIRED = false;
 
-    @Option(shortName = "DUPES", doc = "Include duplicate reads. If set to true then all reads flagged as duplicates will be included as well.")
+    @Argument(shortName = "DUPES", doc = "Include duplicate reads. If set to true then all reads flagged as duplicates will be included as well.")
     public boolean INCLUDE_DUPLICATES = false;
 
-    @Option(shortName = "NON_PF", doc = "Whether or not to include non-PF reads.")
+    @Argument(shortName = "NON_PF", doc = "Whether or not to include non-PF reads.")
     public boolean INCLUDE_NON_PF_READS = false;
 
-    @Option(shortName = "TANDEM", doc = "Set to true if mate pairs are being sequenced from the same strand, " +
+    @Argument(shortName = "TANDEM", doc = "Set to true if mate pairs are being sequenced from the same strand, " +
             "i.e. they're expected to face the same direction.")
     public boolean TANDEM_READS = false;
 
-    @Option(doc = "When available, use original quality scores for filtering.")
+    @Argument(doc = "When available, use original quality scores for filtering.")
     public boolean USE_OQ = true;
 
-    @Option(doc = "The number of context bases to include on each side of the assayed base.")
+    @Argument(doc = "The number of context bases to include on each side of the assayed base.")
     public int CONTEXT_SIZE = 1;
 
-    @Option(doc = "If specified, only print results for these contexts in the detail metrics output. " +
+    @Argument(doc = "If specified, only print results for these contexts in the detail metrics output. " +
                   "However, the summary metrics output will still take all contexts into consideration.")
     public Set<String> CONTEXTS_TO_PRINT = new HashSet<String>();
 
-    @Option(shortName = "EXT", doc="Append the given file extension to all metric file names (ex. OUTPUT.pre_adapter_summary_metrics.EXT). None if null", optional=true)
+    @Argument(shortName = "EXT", doc="Append the given file extension to all metric file names (ex. OUTPUT.pre_adapter_summary_metrics.EXT). None if null", optional=true)
     public String FILE_EXTENSION = null;
 
     private static final String UNKNOWN_LIBRARY = "UnknownLibrary";

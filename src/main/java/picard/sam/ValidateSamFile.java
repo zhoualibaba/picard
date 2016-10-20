@@ -36,7 +36,7 @@ import htsjdk.samtools.util.IOUtil;
 import picard.PicardException;
 import picard.cmdline.CommandLineProgram;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.StandardOptionDefinitions;
 import picard.cmdline.programgroups.SamOrBam;
 
@@ -52,8 +52,8 @@ import java.util.List;
  * @author Doug Voet
  */
 @CommandLineProgramProperties(
-        usage = ValidateSamFile.USAGE_SUMMARY + ValidateSamFile.USAGE_DETAILS,
-        usageShort = ValidateSamFile.USAGE_SUMMARY,
+        summary = ValidateSamFile.USAGE_SUMMARY + ValidateSamFile.USAGE_DETAILS,
+        oneLineSummary = ValidateSamFile.USAGE_SUMMARY,
         programGroup = SamOrBam.class
 )
 public class ValidateSamFile extends CommandLineProgram {
@@ -84,46 +84,46 @@ public class ValidateSamFile extends CommandLineProgram {
             "<hr />";
     public enum Mode {VERBOSE, SUMMARY}
 
-    @Option(shortName = StandardOptionDefinitions.INPUT_SHORT_NAME,
+    @Argument(shortName = StandardOptionDefinitions.INPUT_SHORT_NAME,
             doc = "Input SAM/BAM file")
     public File INPUT;
 
-    @Option(shortName = StandardOptionDefinitions.OUTPUT_SHORT_NAME,
+    @Argument(shortName = StandardOptionDefinitions.OUTPUT_SHORT_NAME,
             doc = "Output file or standard out if missing",
             optional = true)
     public File OUTPUT;
 
-    @Option(shortName = "M",
+    @Argument(shortName = "M",
             doc = "Mode of output")
     public Mode MODE = Mode.VERBOSE;
 
-    @Option(doc = "List of validation error types to ignore.")
+    @Argument(doc = "List of validation error types to ignore.")
     public List<SAMValidationError.Type> IGNORE = new ArrayList<SAMValidationError.Type>();
 
-    @Option(shortName = "MO",
+    @Argument(shortName = "MO",
             doc = "The maximum number of lines output in verbose mode")
     public Integer MAX_OUTPUT = 100;
 
-    @Option(doc = "If true, only report errors and ignore warnings.")
+    @Argument(doc = "If true, only report errors and ignore warnings.")
     public boolean IGNORE_WARNINGS = false;
 
-    @Option(doc = "DEPRECATED.  Use INDEX_VALIDATION_STRINGENCY instead.  If true and input is " +
+    @Argument(doc = "DEPRECATED.  Use INDEX_VALIDATION_STRINGENCY instead.  If true and input is " +
             "a BAM file with an index file, also validates the index.  Until this parameter is retired " +
             "VALIDATE INDEX and INDEX_VALIDATION_STRINGENCY must agree on whether to validate the index.")
     public boolean VALIDATE_INDEX = true;
 
-    @Option(doc = "If set to anything other than IndexValidationStringency.NONE and input is " +
+    @Argument(doc = "If set to anything other than IndexValidationStringency.NONE and input is " +
             "a BAM file with an index file, also validates the index at the specified stringency. " +
             "Until VALIDATE_INDEX is retired, VALIDATE INDEX and INDEX_VALIDATION_STRINGENCY " +
             "must agree on whether to validate the index.")
     public IndexValidationStringency INDEX_VALIDATION_STRINGENCY = IndexValidationStringency.EXHAUSTIVE;
 
-    @Option(shortName = "BISULFITE",
+    @Argument(shortName = "BISULFITE",
             doc = "Whether the SAM or BAM file consists of bisulfite sequenced reads. " +
                     "If so, C->T is not counted as an error in computing the value of the NM tag.")
     public boolean IS_BISULFITE_SEQUENCED = false;
 
-    @Option(doc = "Relevant for a coordinate-sorted file containing read pairs only. " +
+    @Argument(doc = "Relevant for a coordinate-sorted file containing read pairs only. " +
             "Maximum number of file handles to keep open when spilling mate info to disk. " +
             "Set this number a little lower than the per-process maximum number of file that may be open. " +
             "This number can be found by executing the 'ulimit -n' command on a Unix system.")

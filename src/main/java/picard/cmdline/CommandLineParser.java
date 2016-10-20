@@ -50,11 +50,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Annotation-driven utility for parsing command-line arguments, checking for errors, and producing usage message.
+ * Annotation-driven utility for parsing command-line arguments, checking for errors, and producing summary message.
  * <p/>
  * This class supports options of the form KEY=VALUE, plus positional arguments.  Positional arguments must not contain
  * an equal sign lest they be mistaken for a KEY=VALUE pair.
@@ -74,11 +73,11 @@ import java.util.regex.Pattern;
  * then it is an error for the command line to contain positional arguments.
  * <p/>
  * A single String public data member may be annotated with @Usage.  This string, if present, is used to
- * construct the usage message.  Details about the possible options are automatically appended to this string.
- * If @Usage does not appear, a boilerplate usage message is used.
+ * construct the summary message.  Details about the possible options are automatically appended to this string.
+ * If @Usage does not appear, a boilerplate summary message is used.
  */
 public class CommandLineParser {
-    // For formatting option section of usage message.
+    // For formatting option section of summary message.
     private static final int OPTION_COLUMN_WIDTH = 30;
     private static final int DESCRIPTION_COLUMN_WIDTH = 90;
 
@@ -105,7 +104,7 @@ public class CommandLineParser {
     private final Set<String> optionsThatCannotBeOverridden = new HashSet<String>();
 
     /**
-     * A typical command line program will call this to get the beginning of the usage message,
+     * A typical command line program will call this to get the beginning of the summary message,
      * and then append a description of the program, like this:
      * <p/>
      * \@Usage
@@ -147,7 +146,7 @@ public class CommandLineParser {
      * of its own getNestedOptions() method.
      */
     static Map<String, Object> getNestedOptions(final Object callerOptions) {
-        // LinkedHashMap so usage message is generated in order of declaration
+        // LinkedHashMap so summary message is generated in order of declaration
         final Map<String, Object> ret = new LinkedHashMap<String, Object>();
         final Class<?> clazz = callerOptions.getClass();
         for (final Field field : getAllFields(clazz)) {
@@ -206,7 +205,7 @@ public class CommandLineParser {
     private String commandLine = "";
 
     /**
-     * This attribute is here just to facilitate printing usage for OPTIONS_FILE
+     * This attribute is here just to facilitate printing summary for OPTIONS_FILE
      */
     public File IGNORE_THIS_PROPERTY;
 
@@ -226,7 +225,7 @@ public class CommandLineParser {
     private String getUsagePreamble() {
         String usagePreamble = "";
         if (null != programProperties) {
-            usagePreamble += programProperties.usage();
+            usagePreamble += programProperties.summary();
         } else if (positionalArguments == null) {
             usagePreamble += defaultUsagePreamble;
         } else {
@@ -259,10 +258,10 @@ public class CommandLineParser {
             if (field.getAnnotation(PositionalArguments.class) != null) {
                 handlePositionalArgumentAnnotation(field);
             }
-            if (field.getAnnotation(Option.class) != null) {
+            if (field.getAnnotation(Argument.class) != null) {
                 handleOptionAnnotation(field, fieldCounter);
                 // only increase counter if the field had default printOrder 
-                if (field.getAnnotation(Option.class).printOrder() == Integer.MAX_VALUE)
+                if (field.getAnnotation(Argument.class).printOrder() == Integer.MAX_VALUE)
                 		fieldCounter++;
             } else if (!isCommandLineProgram() && field.getAnnotation(NestedOptions.class) != null) {
                 // If callerOptions is an instance of CommandLineProgram, defer creation of child
@@ -299,9 +298,9 @@ public class CommandLineParser {
     }
 
     /**
-     * Print a usage message based on the options object passed to the ctor.
+     * Print a summary message based on the options object passed to the ctor.
      *
-     * @param stream Where to write the usage message.
+     * @param stream Where to write the summary message.
      */
     public void usage(final PrintStream stream, final boolean printCommon) {
 
@@ -338,7 +337,7 @@ public class CommandLineParser {
             printOptionUsage(stream, optionsFileOptionDefinition);
         }
 
-        // Generate usage for child parsers.
+        // Generate summary for child parsers.
         getChildParsersForHelp()
                 .stream()
                 .forEach(childClp -> childClp.usage(stream, printCommon));
@@ -391,7 +390,7 @@ public class CommandLineParser {
 
 
     public void htmlUsage(final PrintStream stream, final String programName, final boolean printCommon) {
-        // TODO: Should HTML escape usage preamble and option usage, including line breaks
+        // TODO: Should HTML escape summary preamble and option summary, including line breaks
         stream.println("<h3 id=\"" + programName + "\">" + programName + "</h3>");
         stream.println("<section>");
         stream.println("<p>" + getUsagePreamble() + "</p>");
@@ -922,14 +921,14 @@ public class CommandLineParser {
     private void handleOptionAnnotation(final Field field, final int fieldPosition) {
         try {
             field.setAccessible(true);
-            final Option optionAnnotation = field.getAnnotation(Option.class);
+            final Argument argumentAnnotation = field.getAnnotation(Argument.class);
             final boolean isCollection = isCollectionField(field);
             if (isCollection) {
-                if (optionAnnotation.maxElements() == 0) {
+                if (argumentAnnotation.maxElements() == 0) {
                     throw new CommandLineParserDefinitionException("@Option member " + field.getName() +
                             "has maxElements = 0");
                 }
-                if (optionAnnotation.minElements() > optionAnnotation.maxElements()) {
+                if (argumentAnnotation.minElements() > argumentAnnotation.maxElements()) {
                     throw new CommandLineParserDefinitionException("In @Option member " + field.getName() +
                             ", minElements cannot be > maxElements");
                 }
@@ -942,7 +941,7 @@ public class CommandLineParser {
                         " must have a String ctor or be an enum");
             }
 
-            int printOrder = optionAnnotation.printOrder();
+            int printOrder = argumentAnnotation.printOrder();
             /*
         	 *  check if we got the default printOrder (ie the print order was not specified in 
         	 *  field annotation).
@@ -958,14 +957,14 @@ public class CommandLineParser {
             
             final OptionDefinition optionDefinition = new OptionDefinition(field,
                     field.getName(),
-                    optionAnnotation.shortName(),
-                    optionAnnotation.doc(), optionAnnotation.optional() || (field.get(callerOptions) != null),
-                    optionAnnotation.overridable(), isCollection, optionAnnotation.minElements(),
-                    optionAnnotation.maxElements(), field.get(callerOptions), optionAnnotation.common(),
-                    optionAnnotation.mutex(), 
+                    argumentAnnotation.shortName(),
+                    argumentAnnotation.doc(), argumentAnnotation.optional() || (field.get(callerOptions) != null),
+                    argumentAnnotation.overridable(), isCollection, argumentAnnotation.minElements(),
+                    argumentAnnotation.maxElements(), field.get(callerOptions), argumentAnnotation.common(),
+                    argumentAnnotation.mutex(),
                     printOrder);
 
-            for (final String option : optionAnnotation.mutex()) {
+            for (final String option : argumentAnnotation.mutex()) {
                 final OptionDefinition mutextOptionDef = optionMap.get(option);
                 if (mutextOptionDef != null) {
                     mutextOptionDef.mutuallyExclusive.add(field.getName());

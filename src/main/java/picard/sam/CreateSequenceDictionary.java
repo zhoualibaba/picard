@@ -35,7 +35,7 @@ import htsjdk.samtools.util.StringUtil;
 import picard.PicardException;
 import picard.cmdline.CommandLineProgram;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.programgroups.Fasta;
 import picard.cmdline.StandardOptionDefinitions;
 
@@ -53,8 +53,8 @@ import java.util.Set;
  * SAMRecords, and the header contains only sequence records.
  */
 @CommandLineProgramProperties(
-        usage = CreateSequenceDictionary.USAGE_SUMMARY + CreateSequenceDictionary.USAGE_DETAILS,
-        usageShort = CreateSequenceDictionary.USAGE_SUMMARY,
+        summary = CreateSequenceDictionary.USAGE_SUMMARY + CreateSequenceDictionary.USAGE_DETAILS,
+        oneLineSummary = CreateSequenceDictionary.USAGE_SUMMARY,
         programGroup = Fasta.class
 )
 public class CreateSequenceDictionary extends CommandLineProgram {
@@ -75,28 +75,28 @@ public class CreateSequenceDictionary extends CommandLineProgram {
             "<hr />";
     // The following attributes define the command-line arguments
 
-    @Option(doc = "Input reference fasta or fasta.gz", shortName = StandardOptionDefinitions.REFERENCE_SHORT_NAME)
+    @Argument(doc = "Input reference fasta or fasta.gz", shortName = StandardOptionDefinitions.REFERENCE_SHORT_NAME)
     public File REFERENCE;
 
-    @Option(doc = "Output SAM or BAM file containing only the sequence dictionary",
+    @Argument(doc = "Output SAM or BAM file containing only the sequence dictionary",
             shortName = StandardOptionDefinitions.OUTPUT_SHORT_NAME)
     public File OUTPUT;
 
-    @Option(doc = "Put into AS field of sequence dictionary entry if supplied", optional = true)
+    @Argument(doc = "Put into AS field of sequence dictionary entry if supplied", optional = true)
     public String GENOME_ASSEMBLY;
 
-    @Option(doc = "Put into UR field of sequence dictionary entry.  If not supplied, input reference file is used",
+    @Argument(doc = "Put into UR field of sequence dictionary entry.  If not supplied, input reference file is used",
             optional = true)
     public String URI;
 
-    @Option(doc = "Put into SP field of sequence dictionary entry", optional = true)
+    @Argument(doc = "Put into SP field of sequence dictionary entry", optional = true)
     public String SPECIES;
 
-    @Option(doc = "Make sequence name the first word from the > line in the fasta file.  " +
+    @Argument(doc = "Make sequence name the first word from the > line in the fasta file.  " +
             "By default the entire contents of the > line is used, excluding leading and trailing whitespace.")
     public boolean TRUNCATE_NAMES_AT_WHITESPACE = true;
 
-    @Option(doc = "Stop after writing this many sequences.  For testing.")
+    @Argument(doc = "Stop after writing this many sequences.  For testing.")
     public int NUM_SEQUENCES = Integer.MAX_VALUE;
 
     private final MessageDigest md5;

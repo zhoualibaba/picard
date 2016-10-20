@@ -41,8 +41,8 @@ import java.util.List;
  * Compare two metrics files.
  */
 @CommandLineProgramProperties(
-        usage = CompareMetrics.USAGE_SUMMARY + CompareMetrics.USAGE_DETAIL,
-        usageShort = CompareMetrics.USAGE_SUMMARY,
+        summary = CompareMetrics.USAGE_SUMMARY + CompareMetrics.USAGE_DETAIL,
+        oneLineSummary = CompareMetrics.USAGE_SUMMARY,
         programGroup = Metrics.class
 )
 public class CompareMetrics extends CommandLineProgram {

@@ -31,7 +31,7 @@ import htsjdk.samtools.reference.ReferenceSequence;
 import htsjdk.samtools.util.CollectionUtil;
 import htsjdk.samtools.util.IOUtil;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.programgroups.Metrics;
 import picard.metrics.GcBiasMetrics;
 import picard.util.RExecutor;
@@ -52,8 +52,8 @@ import java.util.Set;
  * edited by Kylee Bergin
  */
 @CommandLineProgramProperties(
-        usage = CollectGcBiasMetrics.USAGE_SUMMARY + CollectGcBiasMetrics.USAGE_DETAILS,
-        usageShort = CollectGcBiasMetrics.USAGE_SUMMARY,
+        summary = CollectGcBiasMetrics.USAGE_SUMMARY + CollectGcBiasMetrics.USAGE_DETAILS,
+        oneLineSummary = CollectGcBiasMetrics.USAGE_SUMMARY,
         programGroup = Metrics.class
 )
 public class CollectGcBiasMetrics extends SinglePassSamProgram {
@@ -115,22 +115,22 @@ public class CollectGcBiasMetrics extends SinglePassSamProgram {
 
     // Usage and parameters
 
-    @Option(shortName = "CHART", doc = "The PDF file to render the chart to.")
+    @Argument(shortName = "CHART", doc = "The PDF file to render the chart to.")
     public File CHART_OUTPUT;
 
-    @Option(shortName = "S", doc = "The text file to write summary metrics to.")
+    @Argument(shortName = "S", doc = "The text file to write summary metrics to.")
     public File SUMMARY_OUTPUT;
 
-    @Option(shortName = "WINDOW_SIZE", doc = "The size of the scanning windows on the reference genome that are used to bin reads.")
+    @Argument(shortName = "WINDOW_SIZE", doc = "The size of the scanning windows on the reference genome that are used to bin reads.")
     public int SCAN_WINDOW_SIZE = 100;
 
-    @Option(shortName = "MGF", doc = "For summary metrics, exclude GC windows that include less than this fraction of the genome.")
+    @Argument(shortName = "MGF", doc = "For summary metrics, exclude GC windows that include less than this fraction of the genome.")
     public double MINIMUM_GENOME_FRACTION = 0.00001;
 
-    @Option(shortName = "BS", doc = "Whether the SAM or BAM file consists of bisulfite sequenced reads.")
+    @Argument(shortName = "BS", doc = "Whether the SAM or BAM file consists of bisulfite sequenced reads.")
     public boolean IS_BISULFITE_SEQUENCED = false;
 
-    @Option(shortName = "LEVEL", doc = "The level(s) at which to accumulate metrics.")
+    @Argument(shortName = "LEVEL", doc = "The level(s) at which to accumulate metrics.")
     public Set<MetricAccumulationLevel> METRIC_ACCUMULATION_LEVEL = CollectionUtil.makeSet(MetricAccumulationLevel.ALL_READS);
 
     // Calculates GcBiasMetrics for all METRIC_ACCUMULATION_LEVELs provided

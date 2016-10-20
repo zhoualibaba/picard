@@ -36,13 +36,10 @@ import htsjdk.samtools.util.BlockCompressedOutputStream;
 import htsjdk.samtools.util.BlockCompressedStreamConstants;
 import htsjdk.samtools.util.IOUtil;
 import htsjdk.samtools.util.Log;
-import htsjdk.samtools.util.zip.DeflaterFactory;
 import htsjdk.variant.variantcontext.writer.Options;
 import htsjdk.variant.variantcontext.writer.VariantContextWriterBuilder;
 
 import java.io.File;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -74,36 +71,36 @@ import java.util.Map;
 
  */
 public abstract class CommandLineProgram {
-    @Option(common=true, optional=true)
+    @Argument(common=true, optional=true)
     public List<File> TMP_DIR = new ArrayList<File>();
 
-    @Option(doc = "Control verbosity of logging.", common=true)
+    @Argument(doc = "Control verbosity of logging.", common=true)
     public Log.LogLevel VERBOSITY = Log.LogLevel.INFO;
 
-    @Option(doc = "Whether to suppress job-summary info on System.err.", common=true)
+    @Argument(doc = "Whether to suppress job-summary info on System.err.", common=true)
     public Boolean QUIET = false;
 
-    @Option(doc = "Validation stringency for all SAM files read by this program.  Setting stringency to SILENT " +
+    @Argument(doc = "Validation stringency for all SAM files read by this program.  Setting stringency to SILENT " +
             "can improve performance when processing a BAM file in which variable-length data (read, qualities, tags) " +
             "do not otherwise need to be decoded.", common=true)
     public ValidationStringency VALIDATION_STRINGENCY = ValidationStringency.DEFAULT_STRINGENCY;
 
-    @Option(doc = "Compression level for all compressed files created (e.g. BAM and GELI).", common=true)
+    @Argument(doc = "Compression level for all compressed files created (e.g. BAM and GELI).", common=true)
     public int COMPRESSION_LEVEL = BlockCompressedStreamConstants.DEFAULT_COMPRESSION_LEVEL;
 
-    @Option(doc = "When writing SAM files that need to be sorted, this will specify the number of records stored in RAM before spilling to disk. Increasing this number reduces the number of file handles needed to sort a SAM file, and increases the amount of RAM needed.", optional=true, common=true)
+    @Argument(doc = "When writing SAM files that need to be sorted, this will specify the number of records stored in RAM before spilling to disk. Increasing this number reduces the number of file handles needed to sort a SAM file, and increases the amount of RAM needed.", optional=true, common=true)
     public Integer MAX_RECORDS_IN_RAM = SAMFileWriterImpl.getDefaultMaxRecordsInRam();
 
-    @Option(doc = "Whether to create a BAM index when writing a coordinate-sorted BAM file.", common=true)
+    @Argument(doc = "Whether to create a BAM index when writing a coordinate-sorted BAM file.", common=true)
     public Boolean CREATE_INDEX = Defaults.CREATE_INDEX;
 
-    @Option(doc="Whether to create an MD5 digest for any BAM or FASTQ files created.  ", common=true)
+    @Argument(doc="Whether to create an MD5 digest for any BAM or FASTQ files created.  ", common=true)
     public boolean CREATE_MD5_FILE = Defaults.CREATE_MD5;
 
-    @Option(shortName = StandardOptionDefinitions.REFERENCE_SHORT_NAME, doc = "Reference sequence file.", common = true, optional = true, overridable = true)
+    @Argument(shortName = StandardOptionDefinitions.REFERENCE_SHORT_NAME, doc = "Reference sequence file.", common = true, optional = true, overridable = true)
     public File REFERENCE_SEQUENCE = Defaults.REFERENCE_FASTA;
 
-    @Option(doc="Google Genomics API client_secrets.json file path.", common = true)
+    @Argument(doc="Google Genomics API client_secrets.json file path.", common = true)
     public String GA4GH_CLIENT_SECRETS="client_secrets.json";
     
     private final String standardUsagePreamble = CommandLineParser.getStandardUsagePreamble(getClass());
@@ -124,7 +121,7 @@ public abstract class CommandLineProgram {
     
     /**
     * Initialized in parseArgs.  Subclasses may want to access this to do their
-    * own validation, and then print usage using commandLineParser.
+    * own validation, and then print summary using commandLineParser.
     */
     private CommandLineParser commandLineParser;
 
@@ -227,7 +224,7 @@ public abstract class CommandLineProgram {
 
     /**
     * Put any custom command-line validation in an override of this method.
-    * clp is initialized at this point and can be used to print usage and access argv.
+    * clp is initialized at this point and can be used to print summary and access argv.
      * Any options set by command-line parser can be validated.
     * @return null if command line is valid.  If command line is invalid, returns an array of error message
     * to be written to the appropriate place.

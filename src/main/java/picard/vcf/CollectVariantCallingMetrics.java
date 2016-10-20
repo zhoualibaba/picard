@@ -35,7 +35,7 @@ import htsjdk.variant.vcf.VCFFileReader;
 import htsjdk.variant.vcf.VCFHeader;
 import picard.cmdline.CommandLineProgram;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.StandardOptionDefinitions;
 import picard.cmdline.programgroups.Metrics;
 import picard.util.DbSnpBitSetUtil;
@@ -49,33 +49,33 @@ import java.util.Set;
 
 /** Collects summary and per-sample metrics about variant calls in a VCF file. */
 @CommandLineProgramProperties(
-        usage = "Collects per-sample and aggregate (spanning all samples) metrics from the provided VCF file.",
-        usageShort = "Collects per-sample and aggregate (spanning all samples) metrics from the provided VCF file",
+        summary = "Collects per-sample and aggregate (spanning all samples) metrics from the provided VCF file.",
+        oneLineSummary = "Collects per-sample and aggregate (spanning all samples) metrics from the provided VCF file",
         programGroup = Metrics.class
 )
 public class CollectVariantCallingMetrics extends CommandLineProgram {
 
-    @Option(shortName = StandardOptionDefinitions.INPUT_SHORT_NAME, doc = "Input vcf file for analysis")
+    @Argument(shortName = StandardOptionDefinitions.INPUT_SHORT_NAME, doc = "Input vcf file for analysis")
     public File INPUT;
 
-    @Option(shortName = StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc = "Path (except for the file extension) of output metrics files " +
+    @Argument(shortName = StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc = "Path (except for the file extension) of output metrics files " +
             "to write.")
     public File OUTPUT;
 
-    @Option(doc = "Reference dbSNP file in dbSNP or VCF format.")
+    @Argument(doc = "Reference dbSNP file in dbSNP or VCF format.")
     public File DBSNP;
 
-    @Option(shortName = "TI", doc = "Target intervals to restrict analysis to.", optional = true)
+    @Argument(shortName = "TI", doc = "Target intervals to restrict analysis to.", optional = true)
     public File TARGET_INTERVALS;
 
-    @Option(shortName = StandardOptionDefinitions.SEQUENCE_DICTIONARY_SHORT_NAME, optional = true,
+    @Argument(shortName = StandardOptionDefinitions.SEQUENCE_DICTIONARY_SHORT_NAME, optional = true,
             doc = "If present, speeds loading of dbSNP file, will look for dictionary in vcf if not present here.")
     public File SEQUENCE_DICTIONARY = null;
 
-    @Option(doc = "Set to true if running on a single-sample gvcf.", optional = true)
+    @Argument(doc = "Set to true if running on a single-sample gvcf.", optional = true)
     public boolean GVCF_INPUT = false;
 
-    @Option
+    @Argument
     public int THREAD_COUNT = 1;
 
     private final Log log = Log.getInstance(CollectVariantCallingMetrics.class);

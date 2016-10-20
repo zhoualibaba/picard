@@ -36,7 +36,7 @@ import htsjdk.samtools.util.*;
 import picard.PicardException;
 import picard.cmdline.CommandLineProgram;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.StandardOptionDefinitions;
 import picard.cmdline.programgroups.Metrics;
 import picard.filter.CountingDuplicateFilter;
@@ -58,8 +58,8 @@ import static picard.cmdline.StandardOptionDefinitions.MINIMUM_MAPPING_QUALITY_S
  * @author tfennell
  */
 @CommandLineProgramProperties(
-        usage = CollectWgsMetrics.USAGE_SUMMARY + CollectWgsMetrics.USAGE_DETAILS,
-        usageShort = CollectWgsMetrics.USAGE_SUMMARY,
+        summary = CollectWgsMetrics.USAGE_SUMMARY + CollectWgsMetrics.USAGE_DETAILS,
+        oneLineSummary = CollectWgsMetrics.USAGE_SUMMARY,
         programGroup = Metrics.class
 )
 public class CollectWgsMetrics extends CommandLineProgram {
@@ -82,41 +82,41 @@ static final String USAGE_DETAILS = "<p>This tool collects metrics about the fra
 "<hr />"
 ;
 
-    @Option(shortName = StandardOptionDefinitions.INPUT_SHORT_NAME, doc = "Input SAM or BAM file.")
+    @Argument(shortName = StandardOptionDefinitions.INPUT_SHORT_NAME, doc = "Input SAM or BAM file.")
     public File INPUT;
 
-    @Option(shortName = StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc = "Output metrics file.")
+    @Argument(shortName = StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc = "Output metrics file.")
     public File OUTPUT;
 
-    @Option(shortName = StandardOptionDefinitions.REFERENCE_SHORT_NAME, doc = "The reference sequence fasta aligned to.")
+    @Argument(shortName = StandardOptionDefinitions.REFERENCE_SHORT_NAME, doc = "The reference sequence fasta aligned to.")
     public File REFERENCE_SEQUENCE;
 
-    @Option(shortName = MINIMUM_MAPPING_QUALITY_SHORT_NAME, doc = "Minimum mapping quality for a read to contribute coverage.", overridable = true)
+    @Argument(shortName = MINIMUM_MAPPING_QUALITY_SHORT_NAME, doc = "Minimum mapping quality for a read to contribute coverage.", overridable = true)
     public int MINIMUM_MAPPING_QUALITY = 20;
 
-    @Option(shortName = "Q", doc = "Minimum base quality for a base to contribute coverage. N bases will be treated as having a base quality " +
+    @Argument(shortName = "Q", doc = "Minimum base quality for a base to contribute coverage. N bases will be treated as having a base quality " +
             "of negative infinity and will therefore be excluded from coverage regardless of the value of this parameter.", overridable = true)
     public int MINIMUM_BASE_QUALITY = 20;
 
-    @Option(shortName = "CAP", doc = "Treat positions with coverage exceeding this value as if they had coverage at this value (but calculate the difference for PCT_EXC_CAPPED).", overridable = true)
+    @Argument(shortName = "CAP", doc = "Treat positions with coverage exceeding this value as if they had coverage at this value (but calculate the difference for PCT_EXC_CAPPED).", overridable = true)
     public int COVERAGE_CAP = 250;
 
-    @Option(doc="At positions with coverage exceeding this value, completely ignore reads that accumulate beyond this value (so that they will not be considered for PCT_EXC_CAPPED).  Used to keep memory consumption in check, but could create bias if set too low", overridable = true)
+    @Argument(doc="At positions with coverage exceeding this value, completely ignore reads that accumulate beyond this value (so that they will not be considered for PCT_EXC_CAPPED).  Used to keep memory consumption in check, but could create bias if set too low", overridable = true)
     public int LOCUS_ACCUMULATION_CAP = 100000;
 
-    @Option(doc = "For debugging purposes, stop after processing this many genomic bases.")
+    @Argument(doc = "For debugging purposes, stop after processing this many genomic bases.")
     public long STOP_AFTER = -1;
 
-    @Option(doc = "Determines whether to include the base quality histogram in the metrics file.")
+    @Argument(doc = "Determines whether to include the base quality histogram in the metrics file.")
     public boolean INCLUDE_BQ_HISTOGRAM = false;
 
-    @Option(doc="If true, count unpaired reads, and paired reads with one end unmapped")
+    @Argument(doc="If true, count unpaired reads, and paired reads with one end unmapped")
     public boolean COUNT_UNPAIRED = false;
 
-    @Option(doc="Sample Size used for Theoretical Het Sensitivity sampling. Default is 10000.", optional = true)
+    @Argument(doc="Sample Size used for Theoretical Het Sensitivity sampling. Default is 10000.", optional = true)
     public int SAMPLE_SIZE=10000;
 
-    @Option(doc = "An interval list file that contains the positions to restrict the assessment. Please note that " +
+    @Argument(doc = "An interval list file that contains the positions to restrict the assessment. Please note that " +
             "all bases of reads that overlap these intervals will be considered, even if some of those bases extend beyond the boundaries of " +
             "the interval. The ideal use case for this argument is to use it to restrict the calculation to a subset of (whole) contigs. To " +
             "restrict the calculation just to individual positions without overlap, please see CollectWgsMetricsFromSampledSites.",

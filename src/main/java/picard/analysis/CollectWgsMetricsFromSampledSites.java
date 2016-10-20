@@ -27,7 +27,7 @@ package picard.analysis;
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.util.*;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.programgroups.Metrics;
 import picard.filter.CountingFilter;
 
@@ -45,18 +45,18 @@ import java.io.File;
  */
 @Deprecated
 @CommandLineProgramProperties(
-        usage = "Computes a number of metrics that are useful for evaluating coverage and performance of " +
+        summary = "Computes a number of metrics that are useful for evaluating coverage and performance of " +
                 "whole genome sequencing experiments, but only at a set of sampled positions.  " +
                 "It is important that the sampled positions be chosen so that they are spread out " +
                 "at least further than a read's length apart; otherwise, you run the risk of double-counting " +
                 "reads in the metrics. If contig-sized intervals are needed, use INTERVALS argument in CollectWgsMetrics.",
-        usageShort = "Writes whole genome sequencing-related metrics for a SAM or BAM file",
+        oneLineSummary = "Writes whole genome sequencing-related metrics for a SAM or BAM file",
         programGroup = Metrics.class
 )
 
 public class CollectWgsMetricsFromSampledSites extends CollectWgsMetrics {
 
-    @Option(doc = "An interval list file that contains the locations of the positions to assess.", optional = false)
+    @Argument(doc = "An interval list file that contains the locations of the positions to assess.", optional = false)
     public File INTERVALS = null;
 
     public static void main(final String[] args) {

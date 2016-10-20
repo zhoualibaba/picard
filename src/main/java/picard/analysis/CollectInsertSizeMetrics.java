@@ -34,7 +34,7 @@ import htsjdk.samtools.util.Log;
 import picard.PicardException;
 import picard.analysis.directed.InsertSizeMetricsCollector;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.programgroups.Metrics;
 import picard.util.RExecutor;
 
@@ -48,8 +48,8 @@ import java.util.Set;
  * @author Doug Voet (dvoet at broadinstitute dot org)
  */
 @CommandLineProgramProperties(
-        usage = CollectInsertSizeMetrics.USAGE_SUMMARY + CollectInsertSizeMetrics.USAGE_BRIEF,
-        usageShort = CollectInsertSizeMetrics.USAGE_BRIEF,
+        summary = CollectInsertSizeMetrics.USAGE_SUMMARY + CollectInsertSizeMetrics.USAGE_BRIEF,
+        oneLineSummary = CollectInsertSizeMetrics.USAGE_BRIEF,
         programGroup = Metrics.class
 )
 public class CollectInsertSizeMetrics extends SinglePassSamProgram {
@@ -83,26 +83,26 @@ public class CollectInsertSizeMetrics extends SinglePassSamProgram {
     private static final Log log = Log.getInstance(CollectInsertSizeMetrics.class);
     protected static final String Histogram_R_SCRIPT = "picard/analysis/insertSizeHistogram.R";
 
-    @Option(shortName="H", doc="File to write insert size Histogram chart to.")
+    @Argument(shortName="H", doc="File to write insert size Histogram chart to.")
     public File Histogram_FILE;
 
-    @Option(doc="Generate mean, sd and plots by trimming the data down to MEDIAN + DEVIATIONS*MEDIAN_ABSOLUTE_DEVIATION. " +
+    @Argument(doc="Generate mean, sd and plots by trimming the data down to MEDIAN + DEVIATIONS*MEDIAN_ABSOLUTE_DEVIATION. " +
             "This is done because insert size data typically includes enough anomalous values from chimeras and other " +
             "artifacts to make the mean and sd grossly misleading regarding the real distribution.")
     public double DEVIATIONS = 10;
 
-    @Option(shortName="W", doc="Explicitly sets the Histogram width, overriding automatic truncation of Histogram tail. " +
+    @Argument(shortName="W", doc="Explicitly sets the Histogram width, overriding automatic truncation of Histogram tail. " +
             "Also, when calculating mean and standard deviation, only bins <= Histogram_WIDTH will be included.", optional=true)
     public Integer HISTOGRAM_WIDTH = null;
 
-    @Option(shortName="M", doc="When generating the Histogram, discard any data categories (out of FR, TANDEM, RF) that have fewer than this " +
+    @Argument(shortName="M", doc="When generating the Histogram, discard any data categories (out of FR, TANDEM, RF) that have fewer than this " +
             "percentage of overall reads. (Range: 0 to 1).")
     public float MINIMUM_PCT = 0.05f;
 
-    @Option(shortName="LEVEL", doc="The level(s) at which to accumulate metrics.  ")
+    @Argument(shortName="LEVEL", doc="The level(s) at which to accumulate metrics.  ")
     public Set<MetricAccumulationLevel> METRIC_ACCUMULATION_LEVEL = CollectionUtil.makeSet(MetricAccumulationLevel.ALL_READS);
 
-    @Option(doc="If true, also include reads marked as duplicates in the insert size histogram.")
+    @Argument(doc="If true, also include reads marked as duplicates in the insert size histogram.")
     public boolean INCLUDE_DUPLICATES = false;
 
     // Calculates InsertSizeMetrics for all METRIC_ACCUMULATION_LEVELs provided
@@ -115,7 +115,7 @@ public class CollectInsertSizeMetrics extends SinglePassSamProgram {
 
     /**
      * Put any custom command-line validation in an override of this method.
-     * clp is initialized at this point and can be used to print usage and access argv.
+     * clp is initialized at this point and can be used to print summary and access argv.
      * Any options set by command-line parser can be validated.
      *
      * @return null if command line is valid.  If command line is invalid, returns an array of error message

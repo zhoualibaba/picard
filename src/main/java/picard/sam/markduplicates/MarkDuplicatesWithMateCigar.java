@@ -26,7 +26,7 @@ package picard.sam.markduplicates;
 
 import picard.PicardException;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import htsjdk.samtools.util.Histogram;
 import htsjdk.samtools.util.IterableAdapter;
 import htsjdk.samtools.util.Log;
@@ -58,8 +58,8 @@ import java.util.*;
  * @author Nils Homer
  */
 @CommandLineProgramProperties(
-        usage = MarkDuplicatesWithMateCigar.USAGE_SUMMARY + MarkDuplicatesWithMateCigar.USAGE_DETAILS,
-        usageShort =  MarkDuplicatesWithMateCigar.USAGE_SUMMARY,
+        summary = MarkDuplicatesWithMateCigar.USAGE_SUMMARY + MarkDuplicatesWithMateCigar.USAGE_DETAILS,
+        oneLineSummary =  MarkDuplicatesWithMateCigar.USAGE_SUMMARY,
         programGroup = SamOrBam.class
 )
 public class MarkDuplicatesWithMateCigar extends AbstractMarkDuplicatesCommandLineProgram {
@@ -89,14 +89,14 @@ public class MarkDuplicatesWithMateCigar extends AbstractMarkDuplicatesCommandLi
 
     private final Log log = Log.getInstance(MarkDuplicatesWithMateCigar.class);
 
-    @Option(doc = "The minimum distance to buffer records to account for clipping on the 5' end of the records." +
+    @Argument(doc = "The minimum distance to buffer records to account for clipping on the 5' end of the records." +
             "Set this number to -1 to use twice the first read's read length (or 100, whichever is smaller).", optional = true)
     public int MINIMUM_DISTANCE = -1;
 
-    @Option(doc = "Skip record pairs with no mate cigar and include them in the output.")
+    @Argument(doc = "Skip record pairs with no mate cigar and include them in the output.")
     boolean SKIP_PAIRS_WITH_NO_MATE_CIGAR = true;
 
-    @Option(doc = "The block size for use in the coordinate-sorted record buffer.", optional = true)
+    @Argument(doc = "The block size for use in the coordinate-sorted record buffer.", optional = true)
     public int BLOCK_SIZE = 100000;
 
     /** Warnings that will only be emitted once */

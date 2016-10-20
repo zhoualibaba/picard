@@ -28,7 +28,7 @@ package picard.fingerprint;
 import htsjdk.samtools.BamFileIoUtils;
 import picard.cmdline.CommandLineProgramProperties;
 import picard.cmdline.CommandLineProgram;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.StandardOptionDefinitions;
 import htsjdk.samtools.util.IOUtil;
 import htsjdk.samtools.util.FormatUtil;
@@ -48,24 +48,24 @@ import java.util.concurrent.TimeUnit;
  * @author Tim Fennell
  */
 @CommandLineProgramProperties(
-        usage = "Checks if all read groups within a set of BAM files appear to come from the same individual",
-        usageShort = "Checks if all read groups appear to come from the same individual",
+        summary = "Checks if all read groups within a set of BAM files appear to come from the same individual",
+        oneLineSummary = "Checks if all read groups appear to come from the same individual",
         programGroup = Fingerprinting.class
 )
 public class CrosscheckReadGroupFingerprints extends CommandLineProgram {
 
-    @Option(shortName= StandardOptionDefinitions.INPUT_SHORT_NAME,
+    @Argument(shortName= StandardOptionDefinitions.INPUT_SHORT_NAME,
             doc="One or more input BAM files (or lists of BAM files) to compare fingerprints for.")
     public List<File> INPUT;
 
-    @Option(shortName=StandardOptionDefinitions.OUTPUT_SHORT_NAME, optional=true,
+    @Argument(shortName=StandardOptionDefinitions.OUTPUT_SHORT_NAME, optional=true,
             doc="Optional output file to write metrics to. Default is to write to stdout.")
     public File OUTPUT;
 
-    @Option(shortName="H", doc="The file of haplotype data to use to pick SNPs to fingerprint")
+    @Argument(shortName="H", doc="The file of haplotype data to use to pick SNPs to fingerprint")
     public File HAPLOTYPE_MAP;
 
-    @Option(shortName="LOD",
+    @Argument(shortName="LOD",
             doc="If any two read groups match with a LOD score lower than the threshold the program will exit " +
                 "with a non-zero code to indicate error. 0 means equal probability the read groups match vs. " +
                 "come from different individuals, negative numbers mean N logs more likely that the read groups " +
@@ -73,37 +73,37 @@ public class CrosscheckReadGroupFingerprints extends CommandLineProgram {
                 "are from the sample individual.")
     public double LOD_THRESHOLD = 0;
 
-	@Option(doc="Instead of producing the normal comparison of read-groups, roll fingerprints up to the sample level " +
+	@Argument(doc="Instead of producing the normal comparison of read-groups, roll fingerprints up to the sample level " +
             "and print out a sample x sample matrix with LOD scores.")
 	public boolean CROSSCHECK_SAMPLES = false;
 
-    @Option(doc="Instead of producing the normal comparison of read-groups, roll fingerprints up to the library level " +
+    @Argument(doc="Instead of producing the normal comparison of read-groups, roll fingerprints up to the library level " +
             "and print out a library x library matrix with LOD scores.")
     public boolean CROSSCHECK_LIBRARIES = false;
 
-	@Option(doc="The number of threads to use to process BAM files and generate Fingerprints.")
+	@Argument(doc="The number of threads to use to process BAM files and generate Fingerprints.")
 	public int NUM_THREADS = 1;
 
-    @Option(doc="Allow the use of duplicate reads in performing the comparison. Can be useful when duplicate " +
+    @Argument(doc="Allow the use of duplicate reads in performing the comparison. Can be useful when duplicate " +
             "marking has been overly aggressive and coverage is low.")
     public boolean ALLOW_DUPLICATE_READS = false;
 
-    @Option(doc="Assumed genotyping error rate that provides a floor on the probability that a genotype comes from" +
+    @Argument(doc="Assumed genotyping error rate that provides a floor on the probability that a genotype comes from" +
             " the expected sample.")
     public double GENOTYPING_ERROR_RATE = 0.01;
 
-    @Option(doc="If true then only read groups that do not relate to each other as expected will have their LODs reported.")
+    @Argument(doc="If true then only read groups that do not relate to each other as expected will have their LODs reported.")
     public boolean OUTPUT_ERRORS_ONLY = false;
 
-    @Option(doc ="The rate at which a het in a normal sample turns into a hom in the tumor.", optional = true)
+    @Argument(doc ="The rate at which a het in a normal sample turns into a hom in the tumor.", optional = true)
     public double LOSS_OF_HET_RATE = 0.5;
 
-    @Option(doc="Expect all read groups' fingerprints to match, irrespective of their sample names.  By default (with this value set to " +
+    @Argument(doc="Expect all read groups' fingerprints to match, irrespective of their sample names.  By default (with this value set to " +
             "false), read groups with different sample names are expected to mismatch, and those with the same sample name are expected " +
             "to match.")
     public boolean EXPECT_ALL_READ_GROUPS_TO_MATCH = false;
 
-    @Option(doc="When one or more mismatches between read groups are detected, exit with this value instead of 0.")
+    @Argument(doc="When one or more mismatches between read groups are detected, exit with this value instead of 0.")
     public int EXIT_CODE_WHEN_MISMATCH = 1;
 
     private final Log log = Log.getInstance(CrosscheckReadGroupFingerprints.class);

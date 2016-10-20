@@ -24,7 +24,7 @@
 package picard.cmdline;
 
 /**
- * Print out the usage for one or more CommandLinePrograms in a form close to what is used in the Sourceforge Picard website.
+ * Print out the summary for one or more CommandLinePrograms in a form close to what is used in the Sourceforge Picard website.
  *
  * @author alecw@broadinstitute.org
  */

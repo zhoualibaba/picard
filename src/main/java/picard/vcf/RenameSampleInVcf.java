@@ -26,7 +26,7 @@ package picard.vcf;
 
 import picard.cmdline.CommandLineProgram;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.StandardOptionDefinitions;
 import htsjdk.samtools.util.IOUtil;
 import htsjdk.samtools.util.CollectionUtil;
@@ -42,8 +42,8 @@ import java.io.File;
 import java.util.EnumSet;
 
 @CommandLineProgramProperties(
-        usage = RenameSampleInVcf.USAGE_SUMMARY + RenameSampleInVcf.USAGE_DETAILS,
-        usageShort = RenameSampleInVcf.USAGE_SUMMARY,
+        summary = RenameSampleInVcf.USAGE_SUMMARY + RenameSampleInVcf.USAGE_DETAILS,
+        oneLineSummary = RenameSampleInVcf.USAGE_SUMMARY,
         programGroup = VcfOrBcf.class
 )
 public class RenameSampleInVcf extends CommandLineProgram {
@@ -60,16 +60,16 @@ public class RenameSampleInVcf extends CommandLineProgram {
             "      NEW_SAMPLE_NAME=sample123" +
             "</pre>" +
             "<hr />";
-    @Option(shortName=StandardOptionDefinitions.INPUT_SHORT_NAME, doc="Input single sample VCF.")
+    @Argument(shortName=StandardOptionDefinitions.INPUT_SHORT_NAME, doc="Input single sample VCF.")
     public File INPUT;
 
-    @Option(shortName=StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc="Output single sample VCF.")
+    @Argument(shortName=StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc="Output single sample VCF.")
     public File OUTPUT;
 
-    @Option(doc="Existing name of sample in VCF; if provided, asserts that that is the name of the extant sample name", optional = true)
+    @Argument(doc="Existing name of sample in VCF; if provided, asserts that that is the name of the extant sample name", optional = true)
     public String OLD_SAMPLE_NAME = null;
 
-    @Option(doc="New name to give sample in output VCF.")
+    @Argument(doc="New name to give sample in output VCF.")
     public String NEW_SAMPLE_NAME;
 
 

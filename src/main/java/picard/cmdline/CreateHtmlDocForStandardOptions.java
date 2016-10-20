@@ -32,8 +32,8 @@ public class CreateHtmlDocForStandardOptions {
     }
 
     @CommandLineProgramProperties(
-            usage = "",
-            usageShort = "",
+            summary = "",
+            oneLineSummary = "",
             omitFromCommandLine = true
     )
     static class DummyProgram extends CommandLineProgram {

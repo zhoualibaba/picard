@@ -39,7 +39,7 @@ import htsjdk.samtools.util.ProgressLogger;
 import picard.PicardException;
 import picard.cmdline.CommandLineProgram;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.StandardOptionDefinitions;
 import picard.cmdline.programgroups.Metrics;
 import picard.util.RExecutor;
@@ -58,8 +58,8 @@ import java.util.Set;
  */
 
 @CommandLineProgramProperties(
-        usage = CollectRrbsMetrics.USAGE_SUMMARY + CollectRrbsMetrics.USAGE_DETAILS,
-        usageShort = CollectRrbsMetrics.USAGE_SUMMARY,
+        summary = CollectRrbsMetrics.USAGE_SUMMARY + CollectRrbsMetrics.USAGE_DETAILS,
+        oneLineSummary = CollectRrbsMetrics.USAGE_SUMMARY,
         programGroup = Metrics.class
 )
 public class CollectRrbsMetrics extends CommandLineProgram {
@@ -99,26 +99,26 @@ public class CollectRrbsMetrics extends CommandLineProgram {
 
 private static final String R_SCRIPT = "picard/analysis/rrbsQc.R";
 
-    @Option(doc = "The BAM or SAM file containing aligned reads. Must be coordinate sorted", shortName = StandardOptionDefinitions.INPUT_SHORT_NAME)
+    @Argument(doc = "The BAM or SAM file containing aligned reads. Must be coordinate sorted", shortName = StandardOptionDefinitions.INPUT_SHORT_NAME)
     public File INPUT;
-    @Option(doc = "Base name for output files", shortName = StandardOptionDefinitions.METRICS_FILE_SHORT_NAME)
+    @Argument(doc = "Base name for output files", shortName = StandardOptionDefinitions.METRICS_FILE_SHORT_NAME)
     public String METRICS_FILE_PREFIX;
-    @Option(doc = "The reference sequence fasta file", shortName = StandardOptionDefinitions.REFERENCE_SHORT_NAME)
+    @Argument(doc = "The reference sequence fasta file", shortName = StandardOptionDefinitions.REFERENCE_SHORT_NAME)
     public File REFERENCE;
-    @Option(doc = "Minimum read length")
+    @Argument(doc = "Minimum read length")
     public int MINIMUM_READ_LENGTH = 5;
-    @Option(doc = "Threshold for base quality of a C base before it is considered")
+    @Argument(doc = "Threshold for base quality of a C base before it is considered")
     public int C_QUALITY_THRESHOLD = 20;
-    @Option(doc = "Threshold for quality of a base next to a C before the C base is considered")
+    @Argument(doc = "Threshold for quality of a base next to a C before the C base is considered")
     public int NEXT_BASE_QUALITY_THRESHOLD = 10;
-    @Option(doc = "Maximum percentage of mismatches in a read for it to be considered, with a range of 0-1")
+    @Argument(doc = "Maximum percentage of mismatches in a read for it to be considered, with a range of 0-1")
     public double MAX_MISMATCH_RATE = 0.1;
-    @Option(doc = "Set of sequence names to consider, if not specified all sequences will be used", optional = true)
+    @Argument(doc = "Set of sequence names to consider, if not specified all sequences will be used", optional = true)
     public Set<String> SEQUENCE_NAMES = new HashSet<String>();
-    @Option(shortName = StandardOptionDefinitions.ASSUME_SORTED_SHORT_NAME,
+    @Argument(shortName = StandardOptionDefinitions.ASSUME_SORTED_SHORT_NAME,
             doc = "If true, assume that the input file is coordinate sorted even if the header says otherwise.")
     public boolean ASSUME_SORTED = false;
-    @Option(shortName = "LEVEL", doc = "The level(s) at which to accumulate metrics.  ")
+    @Argument(shortName = "LEVEL", doc = "The level(s) at which to accumulate metrics.  ")
     public Set<MetricAccumulationLevel> METRIC_ACCUMULATION_LEVEL = CollectionUtil.makeSet(MetricAccumulationLevel.ALL_READS);
 
     public static final String DETAIL_FILE_EXTENSION = "rrbs_detail_metrics";

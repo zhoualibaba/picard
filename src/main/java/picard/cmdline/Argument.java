@@ -43,11 +43,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @Documented
-public @interface Option {
+public @interface Argument {
     /** The name of the option as it would appear on the command line. */
     String shortName() default "";
 
-    /** Text that appears for this option in text describing usage of the command line program. */
+    /** Text that appears for this option in text describing summary of the command line program. */
     String doc() default "";
 
     /**
@@ -74,7 +74,7 @@ public @interface Option {
 
     /**
      * Is this an Option common to all command line programs.  If it is then it will only
-     * be displayed in usage info when H or STDHELP is used to display usage.
+     * be displayed in summary info when H or STDHELP is used to display summary.
      */
     boolean common() default false;
 
@@ -85,7 +85,7 @@ public @interface Option {
     boolean overridable() default false;
     
     /**
-     * Overwrite default order in which Option are printed in usage by explicitly setting a 
+     * Overwrite default order in which Option are printed in summary by explicitly setting a
      * print position e.g. printOrder=1 is printed before printOrder=2.
      * Options without printOrder automatically receive a printOrder that (1) is a multiple of 1000 
      * and (2) reflects the order's default position. This gives you the option to insert your own options between 

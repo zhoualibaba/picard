@@ -30,7 +30,7 @@ import picard.PicardException;
 import picard.analysis.artifacts.CollectSequencingArtifactMetrics;
 import picard.cmdline.CommandLineProgram;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.programgroups.Metrics;
 import picard.cmdline.StandardOptionDefinitions;
 
@@ -46,8 +46,8 @@ import java.util.*;
  */
 @CommandLineProgramProperties(
 
-        usage = CollectMultipleMetrics.USAGE_SUMMARY + CollectMultipleMetrics.USAGE_DETAILS,
-        usageShort = CollectMultipleMetrics.USAGE_SUMMARY,
+        summary = CollectMultipleMetrics.USAGE_SUMMARY + CollectMultipleMetrics.USAGE_DETAILS,
+        oneLineSummary = CollectMultipleMetrics.USAGE_SUMMARY,
         programGroup = Metrics.class
 )
 public class CollectMultipleMetrics extends CommandLineProgram {
@@ -322,41 +322,41 @@ public class CollectMultipleMetrics extends CommandLineProgram {
         }
     }
 
-    @Option(shortName = StandardOptionDefinitions.INPUT_SHORT_NAME, doc = "Input SAM or BAM file.")
+    @Argument(shortName = StandardOptionDefinitions.INPUT_SHORT_NAME, doc = "Input SAM or BAM file.")
     public File INPUT;
 
-    @Option(doc = "If true (default), then the sort order in the header file will be ignored.",
+    @Argument(doc = "If true (default), then the sort order in the header file will be ignored.",
             shortName = StandardOptionDefinitions.ASSUME_SORTED_SHORT_NAME)
     public boolean ASSUME_SORTED = true;
 
-    @Option(doc = "Stop after processing N reads, mainly for debugging.")
+    @Argument(doc = "Stop after processing N reads, mainly for debugging.")
     public int STOP_AFTER = 0;
 
-    @Option(shortName = StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc = "Base name of output files.")
+    @Argument(shortName = StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc = "Base name of output files.")
     public String OUTPUT;
 
     // create the default accumulation level as a variable. We'll use this to init the command-line arg and for validation later.
     private final Set<MetricAccumulationLevel> accumLevelDefault = CollectionUtil.makeSet(MetricAccumulationLevel.ALL_READS);
 
-    @Option(shortName="LEVEL", doc="The level(s) at which to accumulate metrics.")
+    @Argument(shortName="LEVEL", doc="The level(s) at which to accumulate metrics.")
     public Set<MetricAccumulationLevel> METRIC_ACCUMULATION_LEVEL = new HashSet<>(accumLevelDefault);
 
-    @Option(shortName = "EXT", doc="Append the given file extension to all metric file names (ex. OUTPUT.insert_size_metrics.EXT). None if null", optional=true)
+    @Argument(shortName = "EXT", doc="Append the given file extension to all metric file names (ex. OUTPUT.insert_size_metrics.EXT). None if null", optional=true)
     public String FILE_EXTENSION = null;
 
-    @Option(doc = "Set of metrics programs to apply during the pass through the SAM file.")
+    @Argument(doc = "Set of metrics programs to apply during the pass through the SAM file.")
     public Set<Program> PROGRAM = new LinkedHashSet<>(Arrays.asList(Program.CollectAlignmentSummaryMetrics, Program.CollectBaseDistributionByCycle,
             Program.CollectInsertSizeMetrics, Program.MeanQualityByCycle, Program.QualityScoreDistribution));
 
-    @Option(doc = "An optional list of intervals to restrict analysis to. Only pertains to some of the PROGRAMs. Programs whose stand-alone CLP does not " +
+    @Argument(doc = "An optional list of intervals to restrict analysis to. Only pertains to some of the PROGRAMs. Programs whose stand-alone CLP does not " +
             "have an INTERVALS argument will silently ignore this argument.", optional = true)
     public File INTERVALS;
 
-    @Option(doc = "VCF format dbSNP file, used to exclude regions around known polymorphisms from analysis " +
+    @Argument(doc = "VCF format dbSNP file, used to exclude regions around known polymorphisms from analysis " +
             "by some PROGRAMs; PROGRAMs whose CLP doesn't allow for this argument will quietly ignore it.", optional = true)
     public File DB_SNP;
 
-    @Option(shortName = "UNPAIRED", doc = "Include unpaired reads in CollectSequencingArtifactMetrics. If set to true then all paired reads will be included as well - " +
+    @Argument(shortName = "UNPAIRED", doc = "Include unpaired reads in CollectSequencingArtifactMetrics. If set to true then all paired reads will be included as well - " +
             "MINIMUM_INSERT_SIZE and MAXIMUM_INSERT_SIZE will be ignored in CollectSequencingArtifactMetrics.")
     public boolean INCLUDE_UNPAIRED = false;
     /**

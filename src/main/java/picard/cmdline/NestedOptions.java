@@ -37,7 +37,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Documented
 public @interface NestedOptions {
-    /** Text that appears for this group of options in text describing usage of the command line program. */
+    /** Text that appears for this group of options in text describing summary of the command line program. */
     String doc() default "";
 
 }

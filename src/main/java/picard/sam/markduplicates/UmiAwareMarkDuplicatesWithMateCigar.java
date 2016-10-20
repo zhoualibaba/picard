@@ -29,7 +29,7 @@ import htsjdk.samtools.DuplicateSetIterator;
 import htsjdk.samtools.SAMRecordDuplicateComparator;
 import htsjdk.samtools.util.*;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.programgroups.Alpha;
 
 /**
@@ -46,8 +46,8 @@ import picard.cmdline.programgroups.Alpha;
  * @author fleharty
  */
 @CommandLineProgramProperties(
-        usage = UmiAwareMarkDuplicatesWithMateCigar.USAGE_SUMMARY + UmiAwareMarkDuplicatesWithMateCigar.USAGE_DETAILS,
-        usageShort = UmiAwareMarkDuplicatesWithMateCigar.USAGE_SUMMARY,
+        summary = UmiAwareMarkDuplicatesWithMateCigar.USAGE_SUMMARY + UmiAwareMarkDuplicatesWithMateCigar.USAGE_DETAILS,
+        oneLineSummary = UmiAwareMarkDuplicatesWithMateCigar.USAGE_SUMMARY,
         programGroup = Alpha.class
 )
 public class UmiAwareMarkDuplicatesWithMateCigar extends SimpleMarkDuplicatesWithMateCigar {
@@ -61,19 +61,19 @@ public class UmiAwareMarkDuplicatesWithMateCigar extends SimpleMarkDuplicatesWit
             "<p>This tool is not intended to be used on data without UMIs, see MarkDuplicates for marking duplicates that" +
             "do not have UMIs.</p>";
 
-    @Option(shortName = "MAX_EDIT_DISTANCE_TO_JOIN", doc = "Largest edit distance that UMIs must have in order to be considered as coming from distinct source molecules.", optional = true)
+    @Argument(shortName = "MAX_EDIT_DISTANCE_TO_JOIN", doc = "Largest edit distance that UMIs must have in order to be considered as coming from distinct source molecules.", optional = true)
     public int MAX_EDIT_DISTANCE_TO_JOIN = 1;
 
-    @Option(shortName = "UMI_TAG_NAME", doc = "Tag name to use for UMI", optional = true)
+    @Argument(shortName = "UMI_TAG_NAME", doc = "Tag name to use for UMI", optional = true)
     public String UMI_TAG_NAME = "RX";
 
-    @Option(shortName = "ASSIGNED_UMI_TAG", doc = "Tag name to use for assigned UMI", optional = true)
+    @Argument(shortName = "ASSIGNED_UMI_TAG", doc = "Tag name to use for assigned UMI", optional = true)
     public String ASSIGNED_UMI_TAG = "MI";
 
     // Since we inherit from SimpleMarkDuplicatesWithMateCigar, it is useful for us to also inherit the tests
     // which do not contain UMIs.  By default, we don't allow for missing UMIs, but for the inherited tests
     // we allow for missing UMIs.
-    @Option(doc = "Allow for missing UMIs if data doesn't have UMIs.  This option is intended to be used only for testing the code.  Use SimpleMarkDuplicatesWithMateCigar if data has missing UMIs.", optional = true)
+    @Argument(doc = "Allow for missing UMIs if data doesn't have UMIs.  This option is intended to be used only for testing the code.  Use SimpleMarkDuplicatesWithMateCigar if data has missing UMIs.", optional = true)
     public boolean ALLOW_MISSING_UMIS = false;
 
     private final Log log = Log.getInstance(UmiAwareMarkDuplicatesWithMateCigar.class);

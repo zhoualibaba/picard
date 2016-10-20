@@ -50,8 +50,8 @@ import java.util.Map;
  * @author alecw@broadinstitute.org
  */
 @CommandLineProgramProperties(
-        usage = CompareSAMs.USAGE_SUMMARY + CompareSAMs.USAGE_DETAILS,
-        usageShort = CompareSAMs.USAGE_SUMMARY,
+        summary = CompareSAMs.USAGE_SUMMARY + CompareSAMs.USAGE_DETAILS,
+        oneLineSummary = CompareSAMs.USAGE_SUMMARY,
         programGroup = SamOrBam.class
 )
 public class CompareSAMs extends CommandLineProgram {

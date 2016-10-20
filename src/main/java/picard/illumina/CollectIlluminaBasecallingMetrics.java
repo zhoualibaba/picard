@@ -28,7 +28,7 @@ import picard.PicardException;
 import picard.cmdline.CommandLineProgram;
 import picard.cmdline.CommandLineProgramProperties;
 import picard.cmdline.programgroups.Illumina;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.StandardOptionDefinitions;
 import picard.illumina.parser.ClusterData;import picard.illumina.parser.IlluminaDataProvider;import picard.illumina.parser.IlluminaDataProviderFactory;import picard.illumina.parser.IlluminaDataType;import picard.illumina.parser.ReadStructure;import picard.illumina.parser.readers.BclQualityEvaluationStrategy;
 import htsjdk.samtools.util.IOUtil;
@@ -55,8 +55,8 @@ import java.util.TreeMap;
         - */
 
 @CommandLineProgramProperties(
-        usage = CollectIlluminaBasecallingMetrics.USAGE_SUMMARY + CollectIlluminaBasecallingMetrics.USAGE_DETAILS,
-        usageShort = CollectIlluminaBasecallingMetrics.USAGE_SUMMARY,
+        summary = CollectIlluminaBasecallingMetrics.USAGE_SUMMARY + CollectIlluminaBasecallingMetrics.USAGE_DETAILS,
+        oneLineSummary = CollectIlluminaBasecallingMetrics.USAGE_SUMMARY,
         programGroup = Illumina.class
 )
 public class CollectIlluminaBasecallingMetrics extends CommandLineProgram {
@@ -91,20 +91,20 @@ public class CollectIlluminaBasecallingMetrics extends CommandLineProgram {
     ;
     //Command Line Arguments
 
-    @Option(doc="The Illumina basecalls output directory from which data are read", shortName="B")
+    @Argument(doc="The Illumina basecalls output directory from which data are read", shortName="B")
     public File BASECALLS_DIR;
 
-    @Option(doc="The lane whose data will be read", shortName = StandardOptionDefinitions.LANE_SHORT_NAME)
+    @Argument(doc="The lane whose data will be read", shortName = StandardOptionDefinitions.LANE_SHORT_NAME)
     public Integer LANE;
 
     // TODO: No longer optional after old workflows are through
-    @Option(doc="The file containing barcodes to expect from the run - barcodeData.#",shortName=StandardOptionDefinitions.INPUT_SHORT_NAME, optional = true)
+    @Argument(doc="The file containing barcodes to expect from the run - barcodeData.#",shortName=StandardOptionDefinitions.INPUT_SHORT_NAME, optional = true)
     public File INPUT;
 
-    @Option(doc=ReadStructure.PARAMETER_DOC, shortName="RS")
+    @Argument(doc=ReadStructure.PARAMETER_DOC, shortName="RS")
     public String READ_STRUCTURE;
 
-    @Option(doc="The file to which the collected metrics are written", shortName= StandardOptionDefinitions.OUTPUT_SHORT_NAME, optional = true)
+    @Argument(doc="The file to which the collected metrics are written", shortName= StandardOptionDefinitions.OUTPUT_SHORT_NAME, optional = true)
     public File OUTPUT;
 
     private int barcodeLength = 0;

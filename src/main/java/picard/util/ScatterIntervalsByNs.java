@@ -4,7 +4,7 @@ import htsjdk.samtools.util.SequenceUtil;
 import picard.cmdline.CommandLineProgram;
 import picard.cmdline.CommandLineProgramProperties;
 import picard.cmdline.programgroups.Intervals;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.StandardOptionDefinitions;
 import htsjdk.samtools.util.IOUtil;
 import htsjdk.samtools.reference.ReferenceSequence;
@@ -37,8 +37,8 @@ import java.util.Set;
  */
 
 @CommandLineProgramProperties(
-        usage = ScatterIntervalsByNs.USAGE_SUMMARY + ScatterIntervalsByNs.USAGE_DETAILS,
-        usageShort = ScatterIntervalsByNs.USAGE_SUMMARY,
+        summary = ScatterIntervalsByNs.USAGE_SUMMARY + ScatterIntervalsByNs.USAGE_DETAILS,
+        oneLineSummary = ScatterIntervalsByNs.USAGE_SUMMARY,
         programGroup = Intervals.class
 )
 public class ScatterIntervalsByNs extends CommandLineProgram {
@@ -55,16 +55,16 @@ public class ScatterIntervalsByNs extends CommandLineProgram {
             "      O=output.interval_list" +
             "</pre>" +
             "<hr />";
-    @Option(shortName = StandardOptionDefinitions.REFERENCE_SHORT_NAME, doc = "Reference sequence to use.")
+    @Argument(shortName = StandardOptionDefinitions.REFERENCE_SHORT_NAME, doc = "Reference sequence to use.")
     public File REFERENCE;
 
-    @Option(shortName = StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc = "Output file for interval list.")
+    @Argument(shortName = StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc = "Output file for interval list.")
     public File OUTPUT;
 
-    @Option(shortName = "OT", doc = "Type of intervals to output.", optional = true)
+    @Argument(shortName = "OT", doc = "Type of intervals to output.", optional = true)
     public OutputType OUTPUT_TYPE = OutputType.BOTH;
 
-    @Option(shortName = "N", doc = "Maximal number of contiguous N bases to tolerate, thereby continuing the current ACGT interval.", optional = true)
+    @Argument(shortName = "N", doc = "Maximal number of contiguous N bases to tolerate, thereby continuing the current ACGT interval.", optional = true)
     public int MAX_TO_MERGE = 1;
 
     //not using an enum since Interval.name is a String, and am using that to define the type of the Interval

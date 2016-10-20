@@ -30,7 +30,7 @@ import htsjdk.samtools.util.Log;
 import picard.PicardException;
 import picard.cmdline.CommandLineProgram;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.StandardOptionDefinitions;
 import picard.cmdline.programgroups.Illumina;
 import picard.illumina.parser.ReadStructure;
@@ -49,8 +49,8 @@ import java.util.stream.Collectors;
  */
 
 @CommandLineProgramProperties(
-        usage = CollectIlluminaLaneMetrics.USAGE_SUMMARY + CollectIlluminaLaneMetrics.USAGE_DETAILS,
-        usageShort = CollectIlluminaLaneMetrics.USAGE_SUMMARY,
+        summary = CollectIlluminaLaneMetrics.USAGE_SUMMARY + CollectIlluminaLaneMetrics.USAGE_DETAILS,
+        oneLineSummary = CollectIlluminaLaneMetrics.USAGE_SUMMARY,
         programGroup = Illumina.class
 )
 public class CollectIlluminaLaneMetrics extends CommandLineProgram {
@@ -72,16 +72,16 @@ public class CollectIlluminaLaneMetrics extends CommandLineProgram {
             "for a complete description of the metrics produced by this tool.</p>" +
             "<hr />"
     ;
-    @Option(doc = "The Illumina run directory of the run for which the lane metrics are to be generated")
+    @Argument(doc = "The Illumina run directory of the run for which the lane metrics are to be generated")
     public File RUN_DIRECTORY;
 
-    @Option(doc = "The directory to which the output file will be written")
+    @Argument(doc = "The directory to which the output file will be written")
     public File OUTPUT_DIRECTORY;
 
-    @Option(doc = "The prefix to be prepended to the file name of the output file; an appropriate suffix will be applied", shortName = StandardOptionDefinitions.OUTPUT_SHORT_NAME)
+    @Argument(doc = "The prefix to be prepended to the file name of the output file; an appropriate suffix will be applied", shortName = StandardOptionDefinitions.OUTPUT_SHORT_NAME)
     public String OUTPUT_PREFIX;
 
-    @Option(doc = ReadStructure.PARAMETER_DOC, shortName = "RS")
+    @Argument(doc = ReadStructure.PARAMETER_DOC, shortName = "RS")
     public ReadStructure READ_STRUCTURE;
 
     @Override

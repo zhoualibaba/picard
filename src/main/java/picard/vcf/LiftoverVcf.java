@@ -26,7 +26,7 @@ import htsjdk.variant.vcf.VCFInfoHeaderLine;
 import htsjdk.variant.vcf.VCFRecordCodec;
 import picard.cmdline.CommandLineProgram;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Option;
+import picard.cmdline.Argument;
 import picard.cmdline.StandardOptionDefinitions;
 import picard.cmdline.programgroups.VcfOrBcf;
 
@@ -45,8 +45,8 @@ import java.util.Map;
  * @author Tim Fennell
  */
 @CommandLineProgramProperties(
-        usage = LiftoverVcf.USAGE_SUMMARY + LiftoverVcf.USAGE_DETAILS,
-        usageShort = LiftoverVcf.USAGE_SUMMARY,
+        summary = LiftoverVcf.USAGE_SUMMARY + LiftoverVcf.USAGE_DETAILS,
+        oneLineSummary = LiftoverVcf.USAGE_SUMMARY,
         programGroup = VcfOrBcf.class
 )
 public class LiftoverVcf extends CommandLineProgram {
@@ -69,36 +69,36 @@ public class LiftoverVcf extends CommandLineProgram {
             "</pre>" +
             "For additional information, please see: http://genome.ucsc.edu/cgi-bin/hgLiftOver" +
             "<hr />";
-    @Option(shortName=StandardOptionDefinitions.INPUT_SHORT_NAME, doc="The input VCF/BCF file to be lifted over.")
+    @Argument(shortName=StandardOptionDefinitions.INPUT_SHORT_NAME, doc="The input VCF/BCF file to be lifted over.")
     public File INPUT;
 
-    @Option(shortName=StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc="The output location to write the lifted over VCF/BCF to.")
+    @Argument(shortName=StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc="The output location to write the lifted over VCF/BCF to.")
     public File OUTPUT;
 
-    @Option(shortName="C", doc="The liftover chain file. See https://genome.ucsc.edu/goldenPath/help/chain.html for a description" +
+    @Argument(shortName="C", doc="The liftover chain file. See https://genome.ucsc.edu/goldenPath/help/chain.html for a description" +
             " of chain files.  See http://hgdownload.soe.ucsc.edu/downloads.html#terms for where to download chain files.")
     public File CHAIN;
 
-    @Option(doc="File to which to write rejected records.")
+    @Argument(doc="File to which to write rejected records.")
     public File REJECT;
 
-    @Option(shortName = StandardOptionDefinitions.REFERENCE_SHORT_NAME, common=false,
+    @Argument(shortName = StandardOptionDefinitions.REFERENCE_SHORT_NAME, common=false,
             doc = "The reference sequence (fasta) for the TARGET genome build.  The fasta file must have an " +
                     "accompanying sequence dictionary (.dict file).")
     public File REFERENCE_SEQUENCE = Defaults.REFERENCE_FASTA;
 
     // Option on whether or not to provide a warning, or error message and exit if a missing contig is encountered
-    @Option(shortName = "WMC", doc = "Warn on missing contig.", optional = true)
+    @Argument(shortName = "WMC", doc = "Warn on missing contig.", optional = true)
     public boolean WARN_ON_MISSING_CONTIG = false;
 
     // Option on whether or not to write the original contig/position of the variant to the INFO field
-    @Option(doc = "Write the original contig/position for lifted variants to the INFO field.", optional = true)
+    @Argument(doc = "Write the original contig/position for lifted variants to the INFO field.", optional = true)
     public boolean WRITE_ORIGINAL_POSITION = false;
 
-    @Option(doc = "The minimum percent match required for a variant to be lifted.", optional = true)
+    @Argument(doc = "The minimum percent match required for a variant to be lifted.", optional = true)
     public double LIFTOVER_MIN_MATCH = 1.0;
 
-    @Option(doc = "Allow INFO and FORMAT in the records that are not found in the header", optional = true)
+    @Argument(doc = "Allow INFO and FORMAT in the records that are not found in the header", optional = true)
     public boolean ALLOW_MISSING_FIELDS_IN_HEADER = false;
 
     // When a contig used in the chain is not in the reference, exit with this value instead of 0.

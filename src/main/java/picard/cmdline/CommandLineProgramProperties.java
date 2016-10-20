@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
- * Annotates a command line program with various properties, such as usage (short and long),
+ * Annotates a command line program with various properties, such as summary (short and long),
  * as well as to which program group it belongs.
  *
  * TODO: enforced that any CommandLineProgram has this property defined (use an annotation processor?).
@@ -39,8 +39,8 @@ import java.lang.annotation.ElementType;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface CommandLineProgramProperties {
-    String usage();
-    String usageShort();
+    String summary();
+    String oneLineSummary();
     Class<? extends CommandLineProgramGroup> programGroup() default None.class;
     boolean omitFromCommandLine() default false;
 }
