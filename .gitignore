@@ -1,4 +1,6 @@
 Picard-public.iws
+*.iml
+.DS_Store
 .command_tmp
 classes
 testclasses
