@@ -55,6 +55,8 @@ dependencies {
     //tools dependency for doclet requires sdk devel
     compile(files(((URLClassLoader) ToolProvider.getSystemToolClassLoader()).getURLs()))
     testCompile 'org.testng:testng:6.9.10'
+
+    compile files('../barclay/build/libs/barclay-1.0-SNAPSHOT.jar')
 }
 
 sourceCompatibility = 1.8

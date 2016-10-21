@@ -26,8 +26,8 @@ package picard.analysis;
 
 import htsjdk.samtools.SamReader;
 import htsjdk.samtools.util.*;
+import org.broadinstitute.barclay.argparser.Argument;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Argument;
 import picard.cmdline.programgroups.Metrics;
 import picard.filter.CountingFilter;
 

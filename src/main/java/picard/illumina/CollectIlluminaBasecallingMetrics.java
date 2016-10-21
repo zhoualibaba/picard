@@ -24,11 +24,11 @@
 
 package picard.illumina;
 
+import org.broadinstitute.barclay.argparser.Argument;
 import picard.PicardException;
 import picard.cmdline.CommandLineProgram;
 import picard.cmdline.CommandLineProgramProperties;
 import picard.cmdline.programgroups.Illumina;
-import picard.cmdline.Argument;
 import picard.cmdline.StandardOptionDefinitions;
 import picard.illumina.parser.ClusterData;import picard.illumina.parser.IlluminaDataProvider;import picard.illumina.parser.IlluminaDataProviderFactory;import picard.illumina.parser.IlluminaDataType;import picard.illumina.parser.ReadStructure;import picard.illumina.parser.readers.BclQualityEvaluationStrategy;
 import htsjdk.samtools.util.IOUtil;

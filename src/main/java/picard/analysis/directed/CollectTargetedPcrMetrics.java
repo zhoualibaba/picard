@@ -4,8 +4,8 @@ import htsjdk.samtools.SAMReadGroupRecord;
 import htsjdk.samtools.reference.ReferenceSequenceFile;
 import htsjdk.samtools.util.IntervalList;
 import picard.analysis.MetricAccumulationLevel;
+import org.broadinstitute.barclay.argparser.Argument;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Argument;
 import picard.cmdline.programgroups.Metrics;
 
 import java.io.File;

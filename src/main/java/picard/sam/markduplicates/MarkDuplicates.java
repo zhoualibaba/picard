@@ -26,7 +26,7 @@ package picard.sam.markduplicates;
 
 import picard.PicardException;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Argument;
+import org.broadinstitute.barclay.argparser.Argument;
 import picard.cmdline.programgroups.SamOrBam;
 import picard.sam.DuplicationMetrics;
 import htsjdk.samtools.ReservedTagConstants;

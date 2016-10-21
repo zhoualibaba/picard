@@ -26,7 +26,7 @@ package picard.sam.markduplicates;
 
 import picard.PicardException;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Argument;
+import org.broadinstitute.barclay.argparser.Argument;
 import htsjdk.samtools.util.Histogram;
 import htsjdk.samtools.util.IterableAdapter;
 import htsjdk.samtools.util.Log;

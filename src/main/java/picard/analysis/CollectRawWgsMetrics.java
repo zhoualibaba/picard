@@ -26,8 +26,8 @@ package picard.analysis;
 
 import htsjdk.samtools.util.Histogram;
 import htsjdk.samtools.util.IntervalList;
+import org.broadinstitute.barclay.argparser.Argument;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Argument;
 import picard.cmdline.programgroups.Metrics;
 
 import static picard.cmdline.StandardOptionDefinitions.MINIMUM_MAPPING_QUALITY_SHORT_NAME;

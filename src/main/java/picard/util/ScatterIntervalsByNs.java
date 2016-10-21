@@ -4,7 +4,7 @@ import htsjdk.samtools.util.SequenceUtil;
 import picard.cmdline.CommandLineProgram;
 import picard.cmdline.CommandLineProgramProperties;
 import picard.cmdline.programgroups.Intervals;
-import picard.cmdline.Argument;
+import org.broadinstitute.barclay.argparser.Argument;
 import picard.cmdline.StandardOptionDefinitions;
 import htsjdk.samtools.util.IOUtil;
 import htsjdk.samtools.reference.ReferenceSequence;

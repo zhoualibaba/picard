@@ -26,9 +26,9 @@
 package picard.fingerprint;
 
 import htsjdk.samtools.BamFileIoUtils;
+import org.broadinstitute.barclay.argparser.Argument;
 import picard.cmdline.CommandLineProgramProperties;
 import picard.cmdline.CommandLineProgram;
-import picard.cmdline.Argument;
 import picard.cmdline.StandardOptionDefinitions;
 import htsjdk.samtools.util.IOUtil;
 import htsjdk.samtools.util.FormatUtil;

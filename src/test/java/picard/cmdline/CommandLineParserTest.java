@@ -24,6 +24,7 @@
 package picard.cmdline;
 
 import htsjdk.samtools.util.CollectionUtil;
+import org.broadinstitute.barclay.argparser.Argument;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

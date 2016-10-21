@@ -1,9 +1,9 @@
 package picard.vcf;
 
 import htsjdk.samtools.util.BlockCompressedInputStream;import htsjdk.samtools.util.BlockCompressedOutputStream;import htsjdk.samtools.util.BlockCompressedStreamConstants;import htsjdk.samtools.util.CloseableIterator;import htsjdk.samtools.util.CloserUtil;import htsjdk.samtools.util.CollectionUtil;import htsjdk.samtools.util.RuntimeIOException;import picard.PicardException;
+import org.broadinstitute.barclay.argparser.Argument;
 import picard.cmdline.CommandLineProgram;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Argument;
 import picard.cmdline.StandardOptionDefinitions;
 import htsjdk.samtools.util.IOUtil;
 import htsjdk.samtools.util.Log;

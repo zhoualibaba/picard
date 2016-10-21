@@ -24,8 +24,8 @@
 
 package picard.analysis.directed;
 
+import org.broadinstitute.barclay.argparser.Argument;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Argument;
 import picard.cmdline.programgroups.Metrics;
 
 import static picard.cmdline.StandardOptionDefinitions.MINIMUM_MAPPING_QUALITY_SHORT_NAME;

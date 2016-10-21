@@ -37,9 +37,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import htsjdk.samtools.util.StringUtil;
+import org.broadinstitute.barclay.argparser.Argument;
 import picard.PicardException;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Argument;
 import picard.cmdline.programgroups.Metrics;
 import picard.util.RExecutor;
 

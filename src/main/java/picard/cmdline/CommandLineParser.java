@@ -52,6 +52,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.broadinstitute.barclay.argparser.Argument;
+
 /**
  * Annotation-driven utility for parsing command-line arguments, checking for errors, and producing summary message.
  * <p/>

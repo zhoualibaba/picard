@@ -29,7 +29,7 @@ import htsjdk.samtools.DuplicateSetIterator;
 import htsjdk.samtools.SAMRecordDuplicateComparator;
 import htsjdk.samtools.util.*;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.Argument;
+import org.broadinstitute.barclay.argparser.Argument;
 import picard.cmdline.programgroups.Alpha;
 
 /**

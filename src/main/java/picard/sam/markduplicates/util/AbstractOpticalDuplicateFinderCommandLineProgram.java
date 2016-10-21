@@ -24,6 +24,7 @@
 
 package picard.sam.markduplicates.util;
 
+import org.broadinstitute.barclay.argparser.Argument;
 import picard.cmdline.*;
 import htsjdk.samtools.util.Log;
 
