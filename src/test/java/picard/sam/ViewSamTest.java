@@ -133,4 +133,32 @@ public class ViewSamTest extends CommandLineProgramTest {
         // we should have at least one SAM record written to ensure interval filtering worked correctly
         Assert.assertTrue(foundMatches, "No SAM records overlapped the given intervals.");
     }
+
+    /**
+     * Confirm that ViewSam retains whatever version number was in the input header.
+     */
+    @Test
+    public void testViewSamTools() throws Exception {
+        final String oldVersionHeader = "@HD\tVN:1.3\tSO:unsorted";
+        final File inputSam = File.createTempFile("ViewSamTest.input.", ".sam");
+        inputSam.deleteOnExit();
+        final AsciiWriter writer = new AsciiWriter(new FileOutputStream(inputSam));
+        writer.write(oldVersionHeader);
+        writer.write("\n");
+        writer.close();
+        final File viewSamOutputFile = File.createTempFile("ViewSamTest.output.", ".sam");
+        viewSamOutputFile.deleteOnExit();
+
+        //final ViewSam viewSam = new ViewSam();
+        //viewSam.INPUT = inputSam.getAbsolutePath();
+
+        //final int validateExitStatus = runPicardCommandLine(new String[]{"-I" + inputSam.getAbsolutePath()});
+        final int validateExitStatus = runPicardCommandLine(
+                new String[]{
+                        "I=" + inputSam.getAbsolutePath(),
+                        "ALIGNMENT_STATUS=All",
+                        "PF_STATUS=All"
+                });
+        Assert.assertEquals(validateExitStatus, 0);
+    }
 }

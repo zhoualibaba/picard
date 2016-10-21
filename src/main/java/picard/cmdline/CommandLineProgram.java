@@ -38,7 +38,10 @@ import htsjdk.samtools.util.IOUtil;
 import htsjdk.samtools.util.Log;
 import htsjdk.variant.variantcontext.writer.Options;
 import htsjdk.variant.variantcontext.writer.VariantContextWriterBuilder;
+
 import org.broadinstitute.barclay.argparser.Argument;
+import org.broadinstitute.barclay.argparser.CommandLineParser;
+import org.broadinstitute.barclay.argparser.LegacyCommandLineArgumentParser;
 
 import java.io.File;
 import java.net.InetAddress;
@@ -46,7 +49,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Abstract class to facilitate writing command-line programs.
@@ -104,8 +106,6 @@ public abstract class CommandLineProgram {
     @Argument(doc="Google Genomics API client_secrets.json file path.", common = true)
     public String GA4GH_CLIENT_SECRETS="client_secrets.json";
     
-    private final String standardUsagePreamble = CommandLineParser.getStandardUsagePreamble(getClass());
-
     static {
       // Register custom reader factory for reading data from Google Genomics 
       // implementation of GA4GH API.
@@ -119,7 +119,9 @@ public abstract class CommandLineProgram {
             "com.google.cloud.genomics.gatk.htsjdk.GA4GHReaderFactory");
       }
     }
-    
+
+    private static final String[] PACKAGES_WITH_WEB_DOCUMENTATION = {"picard"};
+
     /**
     * Initialized in parseArgs.  Subclasses may want to access this to do their
     * own validation, and then print summary using commandLineParser.
@@ -196,7 +198,7 @@ public abstract class CommandLineProgram {
                                        " on " + System.getProperty("os.name") + " " + System.getProperty("os.version") +
                                        " " + System.getProperty("os.arch") + "; " + System.getProperty("java.vm.name") +
                                        " " + System.getProperty("java.runtime.version") +
-                                       "; Picard version: " + commandLineParser.getVersion());
+                                       "; Picard version: " + getCommandLineParser().getVersion());
             }
             catch (Exception e) { /* Unpossible! */ }
         }
@@ -213,7 +215,7 @@ public abstract class CommandLineProgram {
                     final String elapsedString  = new DecimalFormat("#,##0.00").format(elapsedMinutes);
                     System.err.println("[" + endDate + "] " + getClass().getName() + " done. Elapsed time: " + elapsedString + " minutes.");
                     System.err.println("Runtime.totalMemory()=" + Runtime.getRuntime().totalMemory());
-                    if (ret != 0 && CommandLineParser.hasWebDocumentation(this.getClass())) System.err.println(CommandLineParser.getFaqLink());
+                    if (ret != 0 && hasWebDocumentation(this.getClass())) System.err.println(getFaqLink());
                 }
             }
             catch (Throwable e) {
@@ -232,17 +234,17 @@ public abstract class CommandLineProgram {
     */
     protected String[] customCommandLineValidation() {
         final List<String> ret = new ArrayList<String>();
-        for (final Object childOptionsObject : getNestedOptions().values()) {
-            if (childOptionsObject instanceof CommandLineProgram) {
-                final CommandLineProgram childClp = (CommandLineProgram)childOptionsObject;
-                final String[] childErrors = childClp.customCommandLineValidation();
-                if (childErrors != null) {
-                    for (final String error: childErrors) {
-                        ret.add(error);
-                    }
-                }
-            }
-        }
+//        for (final Object childOptionsObject : getNestedOptions().values()) {
+//            if (childOptionsObject instanceof CommandLineProgram) {
+//                final CommandLineProgram childClp = (CommandLineProgram)childOptionsObject;
+//                final String[] childErrors = childClp.customCommandLineValidation();
+//                if (childErrors != null) {
+//                    for (final String error: childErrors) {
+//                        ret.add(error);
+//                    }
+//                }
+//            }
+//        }
         if (!ret.isEmpty()) {
             ret.toArray(new String[ret.size()]);
         }
@@ -255,8 +257,8 @@ public abstract class CommandLineProgram {
     */
     protected boolean parseArgs(final String[] argv) {
 
-        commandLineParser = new CommandLineParser(this);
-        final boolean ret = commandLineParser.parseOptions(System.err, argv);
+        commandLineParser = getCommandLineParser();
+        final boolean ret = commandLineParser.parseArguments(System.err, argv);
         commandLine = commandLineParser.getCommandLine();
         if (!ret) {
             return false;
@@ -283,10 +285,14 @@ public abstract class CommandLineProgram {
     }
 
     public String getStandardUsagePreamble() {
-        return standardUsagePreamble;
+        return getCommandLineParser().getStandardUsagePreamble(getClass());
     }
 
     public CommandLineParser getCommandLineParser() {
+
+        if (commandLineParser == null) {
+            commandLineParser = new LegacyCommandLineArgumentParser(this);
+        }
         return commandLineParser;
     }
 
@@ -316,16 +322,54 @@ public abstract class CommandLineProgram {
      * options object, and the value is the nested options object itself.  Default implementation is to return a
      * map of all the fields annotated with @NestedOptions, with key being the field name.
      */
-    public Map<String, Object> getNestedOptions() {
-        return CommandLineParser.getNestedOptions(this);
+//    public Map<String, Object> getNestedOptions() {
+//        return getCommandLineParser().getNestedOptions(this);
+//    }
+//
+//    /**
+//     * @return Map of nested options, where the key is the prefix to be used when specifying Options inside of a nested
+//     * options object, and the value is the nested options object itself, for the purpose of generating help.
+//     * Default implementation is to return the same map as getNestedOptions().
+//     */
+//    public Map<String, Object> getNestedOptionsForHelp() {
+//        return getNestedOptions();
+//    }
+    /**
+     * A typical command line program will call this to get the beginning of the usage message,
+     * and then append a description of the program, like this:
+     * <p/>
+     * \@Usage
+     * public String USAGE = CommandLineParser.getStandardUsagePreamble(getClass()) + "Frobnicates the freebozzle."
+     */
+    public static String getStandardUsagePreamble(final Class<?> mainClass) {
+        return "USAGE: " + mainClass.getSimpleName() + " [options]\n\n" +
+                (hasWebDocumentation(mainClass) ?
+                        "Documentation: http://broadinstitute.github.io/picard/command-line-overview.html#" +
+                                mainClass.getSimpleName() + "\n\n"
+                        : "");
     }
 
     /**
-     * @return Map of nested options, where the key is the prefix to be used when specifying Options inside of a nested
-     * options object, and the value is the nested options object itself, for the purpose of generating help.
-     * Default implementation is to return the same map as getNestedOptions().
+     * Determines if a class has web documentation based on its package name
+     *
+     * @param clazz
+     * @return true if the class has web documentation, false otherwise
      */
-    public Map<String, Object> getNestedOptionsForHelp() {
-        return getNestedOptions();
+    public static boolean hasWebDocumentation(final Class<?>  clazz) {
+        for (final String pkg : PACKAGES_WITH_WEB_DOCUMENTATION) {
+            if (clazz.getPackage().getName().startsWith(pkg)) {
+                return true;
+            }
+        }
+        return false;
     }
+
+    /**
+     * @return the link to a FAQ
+     */
+    public static String getFaqLink() {
+        return "To get help, see http://broadinstitute.github.io/picard/index.html#GettingHelp";
+    }
+
+
 }

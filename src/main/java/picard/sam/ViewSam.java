@@ -66,7 +66,6 @@ public class ViewSam extends CommandLineProgram {
 
     public static enum PfStatus {PF, NonPF, All}
 
-    public final String USAGE = getStandardUsagePreamble() + "Prints a SAM or BAM file to the screen.";
     @Argument(shortName = StandardOptionDefinitions.INPUT_SHORT_NAME, doc = "The SAM or BAM file or GA4GH url to view.")
     public String INPUT;
 

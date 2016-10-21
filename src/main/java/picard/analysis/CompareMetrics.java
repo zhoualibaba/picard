@@ -27,10 +27,10 @@ package picard.analysis;
 import htsjdk.samtools.metrics.MetricsFile;
 import htsjdk.samtools.util.IOUtil;
 import htsjdk.samtools.util.Log;
+import org.broadinstitute.barclay.argparser.PositionalArguments;
 import picard.PicardException;
 import picard.cmdline.CommandLineProgram;
 import picard.cmdline.CommandLineProgramProperties;
-import picard.cmdline.PositionalArguments;
 import picard.cmdline.programgroups.Metrics;
 
 import java.io.File;
