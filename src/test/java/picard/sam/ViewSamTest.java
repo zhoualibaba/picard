@@ -155,9 +155,9 @@ public class ViewSamTest extends CommandLineProgramTest {
         //final int validateExitStatus = runPicardCommandLine(new String[]{"-I" + inputSam.getAbsolutePath()});
         final int validateExitStatus = runPicardCommandLine(
                 new String[]{
-                        "I=" + inputSam.getAbsolutePath(),
-                        "ALIGNMENT_STATUS=All",
-                        "PF_STATUS=All"
+                        "I=" + inputSam.getAbsolutePath()//,
+                        //"ALIGNMENT_STATUS=All",
+                        //"PF_STATUS=All"
                 });
         Assert.assertEquals(validateExitStatus, 0);
     }
