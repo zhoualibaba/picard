@@ -56,7 +56,7 @@ import java.io.File;
         programGroup = VcfOrBcf.class
 )
 public class UpdateVcfSequenceDictionary extends CommandLineProgram {
-     @Option(shortName = StandardOptionDefinitions.INPUT_SHORT_NAME, doc = "Input VCF")
+    @Option(shortName = StandardOptionDefinitions.INPUT_SHORT_NAME, doc = "Input VCF")
     public File INPUT;
 
     @Option(shortName = StandardOptionDefinitions.OUTPUT_SHORT_NAME, doc = "Output VCF to be written.")

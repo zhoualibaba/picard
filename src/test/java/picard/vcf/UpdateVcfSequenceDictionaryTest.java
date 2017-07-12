@@ -38,7 +38,6 @@ import java.io.*;
 public class UpdateVcfSequenceDictionaryTest {
     private static final File TEST_DATA_PATH = new File("testdata/picard/vcf/");
     private static final File OUTPUT_DATA_PATH = IOUtil.createTempDir("UpdateVcfSequenceDictionaryTest", null);
-    private static final File STD_OUT_FILE = new File(OUTPUT_DATA_PATH, "stdout.vcf");
     private static final File UNZIPPED_FILE = new File(OUTPUT_DATA_PATH + "out.vcf");
 
     private static final String STD_OUT_NAME = "/dev/stdout";
@@ -79,7 +78,7 @@ public class UpdateVcfSequenceDictionaryTest {
 
     @Test(dataProvider = "OutputFiles")
     public void testUpdateVcfSequenceDictionary(final String outputFileName) throws IOException, NoSuchFieldException, IllegalAccessException {
-        File inputFile = new File(TEST_DATA_PATH, "vcfFormatTest.vcf");
+        final File inputFile = new File(TEST_DATA_PATH, "vcfFormatTest.vcf");
         // vcfFormatTest.bad_dict.vcf is a vcf with two (2) ##contig lines deleted
         final File samSequenceDictionaryVcf = new File(TEST_DATA_PATH, "vcfFormatTest.bad_dict.vcf");
         final File outputFile = new File(outputFileName);
@@ -100,7 +99,7 @@ public class UpdateVcfSequenceDictionaryTest {
         }
 
         // Check that the output is equal to the input file if the output is not going to stdout
-        if ( outputFileName != STD_OUT_NAME ) {
+        if (outputFileName != STD_OUT_NAME) {
             IOUtil.assertFilesEqual(samSequenceDictionaryVcf,
                     outputFileName.endsWith(VcfUtils.COMPRESSED_VCF_ENDING) ? UNZIPPED_FILE : outputFile);
         }
