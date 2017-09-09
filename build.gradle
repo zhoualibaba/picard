@@ -200,7 +200,7 @@ task barclayShadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.Sha
     configurations = [project.configurations.runtime]
     from project.sourceSets.main.output
     from('src/main/resources/properties.templates') {
-        // for the default jar, we want the properties file that enables the picard parser
+        // for the barclay jar, we want the properties file that enables the barclay parser
         include barclaySourcePropertyFile
         into picardTargetPropertiesPath
         rename { String fileName ->
@@ -209,6 +209,22 @@ task barclayShadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.Sha
     }
     archiveName 'picardBarclay.jar'
 }
+
+def barclaySkinnyJarFile = file('build/libs/picardBarclaySkinny.jar')
+
+task barclayJar(type: Jar) {
+    from project.sourceSets.main.output
+    from('src/main/resources/properties.templates') {
+        // for the barclay jar, we want the properties file that enables the barclay parser
+        include barclaySourcePropertyFile
+        into picardTargetPropertiesPath
+        rename { String fileName ->
+            fileName.replace(barclaySourcePropertyFile, picardTargetPropertyFile)
+        }
+    }
+    archiveName barclaySkinnyJarFile.name
+}
+
 
 // Run the tests using the legacy parser only. Assumes that test code is written using
 // legacy command line parser syntax.
@@ -296,6 +312,8 @@ task sourcesJar(type: Jar) {
  */
 artifacts {
     archives jar
+    //archives file: barclaySkinnyJarFile, name: 'picardBarclaySkinny.jar', type: 'jar'
+    archives barclayJar
     archives javadocJar
     archives sourcesJar
 }
@@ -354,6 +372,15 @@ uploadArchives {
                     }
                 }
             }
+            addFilter('jar') {artifact, file ->
+                System.out.println("filtering jar " + artifact + " : " + file)
+                artifact.name == 'picard.jar'
+            }
+            addFilter('barclayJar') {artifact, file ->
+                System.out.println("filtering barclayjar " + artifact + " : " + file)
+                artifact.name == barclaySkinnyJarFile.name
+            }
+            pom('barclayJar').version = '0.9'
         }
     }
     doFirst {
