@@ -68,11 +68,11 @@ import java.util.*;
  *
  * <h3>Example</h3>
  * <pre>
- * java -jar picard.jar LiftoverVcf \\
- *     I=input.vcf \\
- *     O=lifted_over.vcf \\
- *     CHAIN=b37tohg38.chain \\
- *     REJECT=rejected_variants.vcf \\
+ * java -jar picard.jar LiftoverVcf \
+ *     I=input.vcf \
+ *     O=lifted_over.vcf \
+ *     CHAIN=b37tohg38.chain \
+ *     REJECT=rejected_variants.vcf \
  *     R=reference_sequence.fasta
  * </pre>
  * <h3>Caveats</h3>
