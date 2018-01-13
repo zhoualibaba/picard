@@ -45,15 +45,15 @@ import org.broadinstitute.barclay.argparser.CommandLineProgramProperties;
 import picard.cmdline.argumentcollections.ReferenceArgumentCollection;
 import picard.cmdline.programgroups.ReferenceProgramGroup;
 import picard.cmdline.StandardOptionDefinitions;
+import picard.util.SequenceDictionaryUtils;
 
 import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+import static picard.util.SequenceDictionaryUtils.makeSortingCollection;
 
 /**
  * Create a SAM/BAM file from a fasta containing reference sequence. The output SAM file contains a header but no
@@ -71,7 +71,7 @@ public class CreateSequenceDictionary extends CommandLineProgram {
             "sequence provided in FASTA format, which is required by many processing and analysis tools. The output file contains a " +
             "header but no SAMRecords, and the header contains only sequence records." +
             "<br /><br />" +
-            "The reference sequence can be gzipped (both .fasta and .fasta.gz are supported)."  +
+            "The reference sequence can be gzipped (both .fasta and .fasta.gz are supported)." +
             "" +
             "<h4>Usage example:</h4>" +
             "<pre>" +
@@ -116,14 +116,13 @@ public class CreateSequenceDictionary extends CommandLineProgram {
         }
     }
 
-    public static void main(final String[] argv) {
-        System.exit(new CreateSequenceDictionary().instanceMain(argv));
-    }
-
     /**
      * Read all the sequences from the given reference file, and convert into SAMSequenceRecords
+     *
      * @param referenceFile fasta or fasta.gz
      * @return SAMSequenceRecords containing info from the fasta, plus from cmd-line arguments.
+     *
+     * @deprecated 12/9/16
      */
     @Deprecated
     public SAMSequenceDictionary makeSequenceDictionary(final File referenceFile) {
@@ -170,7 +169,7 @@ public class CreateSequenceDictionary extends CommandLineProgram {
         @Override
         public File getReferenceFile() {
             return REFERENCE;
-        };
+        }
     }
 
     /**
@@ -185,40 +184,15 @@ public class CreateSequenceDictionary extends CommandLineProgram {
                     " already exists.  Delete this file and try again, or specify a different output file.");
         }
 
-        // SortingCollection is used to check uniqueness of sequence names
-        final SortingCollection<String> sequenceNames = makeSortingCollection();
         try (BufferedWriter writer = makeWriter()) {
-            final ReferenceSequenceFile refSeqFile = ReferenceSequenceFileFactory.
-                    getReferenceSequenceFile(REFERENCE_SEQUENCE, TRUNCATE_NAMES_AT_WHITESPACE);
-            SAMSequenceDictionaryCodec samDictCodec = new SAMSequenceDictionaryCodec(writer);
-
-            samDictCodec.encodeHeaderLine(false);
-            // read reference sequence one by one and write its metadata
-            for (ReferenceSequence refSeq = refSeqFile.nextSequence(); refSeq != null; refSeq = refSeqFile.nextSequence()) {
-                final SAMSequenceRecord samSequenceRecord = makeSequenceRecord(refSeq);
-                samDictCodec.encodeSequenceRecord(samSequenceRecord);
-                sequenceNames.add(refSeq.getName());
-            }
+            SequenceDictionaryUtils.encodeDictionary(writer, new SAMSequenceRecordIterator(REFERENCE_SEQUENCE, TRUNCATE_NAMES_AT_WHITESPACE));
         } catch (FileNotFoundException e) {
             throw new PicardException("File " + OUTPUT.getAbsolutePath() + " not found");
         } catch (IOException e) {
             throw new PicardException("Can't write to or close output file " + OUTPUT.getAbsolutePath());
-        }
-
-        // check uniqueness of sequences names
-        final CloseableIterator<String> iterator = sequenceNames.iterator();
-
-        if(!iterator.hasNext()) return 0;
-
-        String current = iterator.next();
-        while (iterator.hasNext()) {
-            final String next = iterator.next();
-            if (current.equals(next)) {
-                OUTPUT.delete();
-                throw new PicardException("Sequence name " + current +
-                        " appears more than once in reference file");
-            }
-            current = next;
+        } catch (IllegalArgumentException e) {
+            OUTPUT.delete();
+            throw new PicardException(e.getMessage());
         }
         return 0;
     }
@@ -244,8 +218,8 @@ public class CreateSequenceDictionary extends CommandLineProgram {
         // Compute MD5 of upcased bases
         final byte[] bases = refSeq.getBases();
         for (int i = 0; i < bases.length; ++i) {
-                bases[i] = StringUtil.toUpperCase(bases[i]);
-            }
+            bases[i] = StringUtil.toUpperCase(bases[i]);
+        }
 
         ret.setAttribute(SAMSequenceRecord.MD5_TAG, md5Hash(bases));
         if (GENOME_ASSEMBLY != null) {
@@ -253,8 +227,8 @@ public class CreateSequenceDictionary extends CommandLineProgram {
         }
         ret.setAttribute(SAMSequenceRecord.URI_TAG, URI);
         if (SPECIES != null) {
-                ret.setAttribute(SAMSequenceRecord.SPECIES_TAG, SPECIES);
-            }
+            ret.setAttribute(SAMSequenceRecord.SPECIES_TAG, SPECIES);
+        }
         return ret;
     }
 
@@ -269,53 +243,33 @@ public class CreateSequenceDictionary extends CommandLineProgram {
         return s;
     }
 
-    private SortingCollection<String> makeSortingCollection() {
-        final String name = getClass().getSimpleName();
-        final File tmpDir = IOUtil.createTempDir(name, null);
-        tmpDir.deleteOnExit();
-        // 256 byte for one name, and 1/10 part of all memory for this, rough estimate
-        long maxNamesInRam = Runtime.getRuntime().maxMemory() / 256 / 10;
-        return SortingCollection.newInstance(
-                String.class,
-                new StringCodec(),
-                String::compareTo,
-                (int) Math.min(maxNamesInRam, Integer.MAX_VALUE),
-                tmpDir
-        );
-    }
+    private class SAMSequenceRecordIterator implements Iterator<SAMSequenceRecord> {
 
-    private static class StringCodec implements SortingCollection.Codec<String> {
-        private DataInputStream dis;
-        private DataOutputStream dos;
+        private final ReferenceSequenceFile refSeqFile;
+        private SAMSequenceRecord nextRecord;
 
-        public StringCodec clone() {
-            return new StringCodec();
+        SAMSequenceRecordIterator(final File reference, boolean truncateAtWhiteSpace) {
+            refSeqFile = ReferenceSequenceFileFactory.
+                    getReferenceSequenceFile(reference, truncateAtWhiteSpace);
+            getNext();
         }
 
-        public void setOutputStream(final OutputStream os) {
-            dos = new DataOutputStream(os);
+        private void getNext() {
+            nextRecord = Optional.ofNullable(refSeqFile.nextSequence())
+                    .map(CreateSequenceDictionary.this::makeSequenceRecord)
+                    .orElse(null);
         }
 
-        public void setInputStream(final InputStream is) {
-            dis = new DataInputStream(is);
+        @Override
+        public SAMSequenceRecord next() {
+            final SAMSequenceRecord tempNext = nextRecord;
+            getNext();
+            return tempNext;
         }
 
-        public void encode(final String str) {
-            try {
-                dos.writeUTF(str);
-            } catch (IOException e) {
-                throw new RuntimeIOException(e);
-            }
-        }
-
-        public String decode() {
-            try {
-                return dis.readUTF();
-            } catch (EOFException e) {
-                return null;
-            } catch (IOException e) {
-                throw new PicardException("Exception reading sequence name from temporary file.", e);
-            }
+        @Override
+        public boolean hasNext() {
+            return nextRecord == null;
         }
     }
 }
