@@ -28,8 +28,8 @@ import com.google.cloud.http.HttpTransportOptions;
 import com.google.cloud.storage.StorageOptions;
 import com.google.cloud.storage.contrib.nio.CloudStorageConfiguration;
 import com.google.cloud.storage.contrib.nio.CloudStorageFileSystemProvider;
-import shaded.cloud_nio.com.google.api.gax.retrying.RetrySettings;
-import shaded.cloud_nio.org.threeten.bp.Duration;
+import com.google.api.gax.retrying.RetrySettings;
+import org.threeten.bp.Duration;
 
 
 /**

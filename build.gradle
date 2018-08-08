@@ -66,9 +66,8 @@ ensureBuildPrerequisites(requiredJavaVersion, buildPrerequisitesMessage)
 
 final htsjdkVersion = System.getProperty('htsjdk.version', '2.16.0')
 
-// We use a custom shaded build of the NIO library to avoid a regression in the authentication layer.
-// GATK does the same, see https://github.com/broadinstitute/gatk/issues/3591
-final googleNio = 'org.broadinstitute:google-cloud-nio-GATK4-custom-patch:0.20.4-alpha-GCS-RETRY-FIX:shaded'
+// Use the same version used by GATK
+final googleNio = 'com.google.cloud:google-cloud-nio:0.53.0-alpha'
 
 // Get the jdk files we need to run javaDoc. We need to use these during compile, testCompile,
 // test execution, and gatkDoc generation, but we don't want them as part of the runtime
