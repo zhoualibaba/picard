@@ -139,7 +139,7 @@ public class OpticalDuplicateFinderTest {
                 loc(1, 100, 190),
                 loc(1, 100, 460),
                 loc(1,  100, 370),
-                loc(1,  100, 190)
+                loc(1,  100, 280)
         );
 
         Assert.assertEquals(countTrue(finder.findOpticalDuplicates(locs, locs.get(0))),3);
