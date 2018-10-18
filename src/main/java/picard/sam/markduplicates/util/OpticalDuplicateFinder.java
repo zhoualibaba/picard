@@ -156,10 +156,15 @@ public class OpticalDuplicateFinder extends ReadNameParser implements Serializab
         // Make a graph where the edges are reads that lie within the optical duplicate pixel distance from each other,
         // we will then use the union-find algorithm to cluster the graph and find optical duplicate groups
         GraphUtils.Graph<Integer> opticalDistanceRelationGraph = new GraphUtils.Graph<>();
+        if (logProgress) {
+            log.debug("Building adjacency graph for duplicate group");
+        }
         int keeperIndex=-1;
         for (int i = 0; i < length; i++) {
             PhysicalLocation thisLoc = list.get(i);
-            if (keeper== thisLoc) keeperIndex = i;
+            if (keeper == thisLoc) {
+                keeperIndex = i;
+            }
             for (int j = i + 1; j < length; j++) {
                 PhysicalLocation other = list.get(j);
                 // The main point of adding this log and if statement (also below) is a workaround a bug in the JVM
@@ -175,25 +180,32 @@ public class OpticalDuplicateFinder extends ReadNameParser implements Serializab
                 }
             }
         }
+        if (logProgress) {
+            log.debug("Finished building adjacency graph for duplicate group, moving onto clustering");
+        }
 
         // Keep a map of the reads and their cluster assignments
         final Map<Integer, Integer> opticalDuplicateClusterMap = opticalDistanceRelationGraph.cluster();
         final Map<Integer, Integer> clusterToRepresentativeRead = new HashMap<>();
 
         // Specially mark the keeper as specifically not a duplicate if it exists
-        if (keeperIndex>=0) {
+        if (keeperIndex >= 0) {
             clusterToRepresentativeRead.put(opticalDuplicateClusterMap.get(keeperIndex),keeperIndex);
         }
 
         for (Map.Entry<Integer, Integer> entry : opticalDuplicateClusterMap.entrySet()) {
             // logging here for same reason as above
-            if (logProgress) progressLoggerForRest.record(String.format("%d", list.get(entry.getKey()).getReadGroup()), list.get(entry.getKey()).getX());
+            Integer recordIndex = entry.getKey();
+            Integer recordAssignedCluster = entry.getValue();
+            if (logProgress) {
+                progressLoggerForRest.record(String.format("%d", list.get(recordIndex).getReadGroup()), list.get(recordIndex).getX());
+            }
 
             // If its not the first read we've seen for this cluster, mark it as an optical duplicate
-            if(clusterToRepresentativeRead.containsKey(entry.getValue()) && entry.getKey()!=keeperIndex) {
-                opticalDuplicateFlags[entry.getKey()] = true;
+            if (clusterToRepresentativeRead.containsKey(recordAssignedCluster) && recordIndex != keeperIndex) {
+                opticalDuplicateFlags[recordIndex] = true;
             } else {
-                clusterToRepresentativeRead.put(entry.getValue(),entry.getKey());
+                clusterToRepresentativeRead.put(recordAssignedCluster, recordIndex);
             }
         }
         return opticalDuplicateFlags;
