@@ -149,7 +149,7 @@ public class OpticalDuplicateFinderTest {
     @Test
     public void testKeeperOrderDependenceTwoDistinctClusters() {
         final OpticalDuplicateFinder finder = new OpticalDuplicateFinder(OpticalDuplicateFinder.DEFAULT_READ_NAME_REGEX, 100, null);
-        List<PhysicalLocation> locs = Arrays.asList(
+        final List<PhysicalLocation> locs = Arrays.asList(
                 loc(1, 100, 190),
                 loc(1, 100, 280),
                 // A second cluster of reads that should result in 3 extra optical duplicates
@@ -159,7 +159,7 @@ public class OpticalDuplicateFinderTest {
                 loc(1, 300, 760)
         );
         // Reordered the second cluster from the keeper cluster so they will not be grouped together
-        List<PhysicalLocation> locsReordered = Arrays.asList(
+        final List<PhysicalLocation> locsReordered = Arrays.asList(
                 loc(1, 100, 190),
                 loc(1, 100, 280),
                 loc(1, 300, 500),
@@ -174,7 +174,7 @@ public class OpticalDuplicateFinderTest {
 
     @Test
     public void testMaxSetSize() {
-        List<PhysicalLocation> locs = Arrays.asList(
+        final List<PhysicalLocation> locs = Arrays.asList(
                 loc(7, 1500, 1500),
                 loc(7, 1501, 1501),
                 loc(7, 1490, 1502));
