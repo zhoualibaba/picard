@@ -155,13 +155,13 @@ public class OpticalDuplicateFinder extends ReadNameParser implements Serializab
 
         // Make a graph where the edges are reads that lie within the optical duplicate pixel distance from each other,
         // we will then use the union-find algorithm to cluster the graph and find optical duplicate groups
-        GraphUtils.Graph<Integer> opticalDistanceRelationGraph = new GraphUtils.Graph<>();
+        final GraphUtils.Graph<Integer> opticalDistanceRelationGraph = new GraphUtils.Graph<>();
         if (logProgress) {
             log.debug("Building adjacency graph for duplicate group");
         }
-        int keeperIndex=-1;
+        int keeperIndex = -1;
         for (int i = 0; i < length; i++) {
-            PhysicalLocation thisLoc = list.get(i);
+            final PhysicalLocation thisLoc = list.get(i);
             if (keeper == thisLoc) {
                 keeperIndex = i;
             }
@@ -190,13 +190,13 @@ public class OpticalDuplicateFinder extends ReadNameParser implements Serializab
 
         // Specially mark the keeper as specifically not a duplicate if it exists
         if (keeperIndex >= 0) {
-            clusterToRepresentativeRead.put(opticalDuplicateClusterMap.get(keeperIndex),keeperIndex);
+            clusterToRepresentativeRead.put(opticalDuplicateClusterMap.get(keeperIndex), keeperIndex);
         }
 
         for (Map.Entry<Integer, Integer> entry : opticalDuplicateClusterMap.entrySet()) {
             // logging here for same reason as above
-            Integer recordIndex = entry.getKey();
-            Integer recordAssignedCluster = entry.getValue();
+            final int recordIndex = entry.getKey();
+            final int recordAssignedCluster = entry.getValue();
             if (logProgress) {
                 progressLoggerForRest.record(String.format("%d", list.get(recordIndex).getReadGroup()), list.get(recordIndex).getX());
             }

@@ -662,7 +662,7 @@ public class MarkDuplicates extends AbstractMarkDuplicatesCommandLineProgram {
      * Goes through the accumulated ReadEndsForMarkDuplicates objects and determines which of them are
      * to be marked as duplicates.
      */
-        private void generateDuplicateIndexes(final boolean useBarcodes, final boolean indexOpticalDuplicates) {
+    private void generateDuplicateIndexes(final boolean useBarcodes, final boolean indexOpticalDuplicates) {
         final int entryOverhead;
         if (TAG_DUPLICATE_SET_MEMBERS) {
             // Memory requirements for RepresentativeReadIndexer:
