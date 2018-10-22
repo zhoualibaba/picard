@@ -193,7 +193,7 @@ public class OpticalDuplicateFinder extends ReadNameParser implements Serializab
             clusterToRepresentativeRead.put(opticalDuplicateClusterMap.get(keeperIndex), keeperIndex);
         }
 
-        for (Map.Entry<Integer, Integer> entry : opticalDuplicateClusterMap.entrySet()) {
+        for (final Map.Entry<Integer, Integer> entry : opticalDuplicateClusterMap.entrySet()) {
             // logging here for same reason as above
             final int recordIndex = entry.getKey();
             final int recordAssignedCluster = entry.getValue();

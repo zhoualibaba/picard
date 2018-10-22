@@ -67,7 +67,7 @@ public class OpticalDuplicateFinderTest {
     public void testKeeper() {
         final Log log = Log.getInstance(OpticalDuplicateFinderTest.class);
         final OpticalDuplicateFinder finder = new OpticalDuplicateFinder(OpticalDuplicateFinder.DEFAULT_READ_NAME_REGEX, 100, log);
-        List<PhysicalLocation> locs = Arrays.asList(
+        final List<PhysicalLocation> locs = Arrays.asList(
                 loc(7, 1500, 1500),
                 loc(7, 1501, 1501),
                 loc(5, 1500, 1500),
@@ -102,7 +102,7 @@ public class OpticalDuplicateFinderTest {
     public void testKeeperNotInList() {
         final Log log = Log.getInstance(OpticalDuplicateFinderTest.class);
         final OpticalDuplicateFinder finder = new OpticalDuplicateFinder(OpticalDuplicateFinder.DEFAULT_READ_NAME_REGEX, 100, log);
-        List<PhysicalLocation> locs = Arrays.asList(
+        final List<PhysicalLocation> locs = Arrays.asList(
                 loc(1, 100, 100),
                 loc(1, 101, 101),
                 loc(1,  99, 99),
@@ -116,7 +116,7 @@ public class OpticalDuplicateFinderTest {
     public void testKeeperAtEndWithinCliqueOfAllOpticalDuplicates() {
         final Log log = Log.getInstance(OpticalDuplicateFinderTest.class);
         final OpticalDuplicateFinder finder = new OpticalDuplicateFinder(OpticalDuplicateFinder.DEFAULT_READ_NAME_REGEX, 15, log);
-        List<PhysicalLocation> locs = Arrays.asList(
+        final List<PhysicalLocation> locs = Arrays.asList(
                 loc(1, 10, 0),
                 loc(1, 20, 0),
                 loc(1, 30, 0)
@@ -129,13 +129,13 @@ public class OpticalDuplicateFinderTest {
     public void testKeeperOrderDependence() {
         final Log log = Log.getInstance(OpticalDuplicateFinderTest.class);
         final OpticalDuplicateFinder finder = new OpticalDuplicateFinder(OpticalDuplicateFinder.DEFAULT_READ_NAME_REGEX, 100, log);
-        List<PhysicalLocation> locs = Arrays.asList(
+        final List<PhysicalLocation> locs = Arrays.asList(
                 loc(1, 100, 190),
                 loc(1, 100, 280),
                 loc(1,  100, 370),
                 loc(1,  100, 460)
         );
-        List<PhysicalLocation> locsReordered = Arrays.asList(
+        final List<PhysicalLocation> locsReordered = Arrays.asList(
                 loc(1, 100, 190),
                 loc(1, 100, 460),
                 loc(1,  100, 370),
