@@ -187,10 +187,12 @@ public class OpticalDuplicateFinder extends ReadNameParser implements Serializab
         // Keep a map of the reads and their cluster assignments
         final Map<Integer, Integer> opticalDuplicateClusterMap = opticalDistanceRelationGraph.cluster();
         final Map<Integer, Integer> clusterToRepresentativeRead = new HashMap<>();
+        Integer keeperCluster = null;
 
         // Specially mark the keeper as specifically not a duplicate if it exists
         if (keeperIndex >= 0) {
             clusterToRepresentativeRead.put(opticalDuplicateClusterMap.get(keeperIndex), keeperIndex);
+            keeperCluster = opticalDuplicateClusterMap.get(keeperIndex);
         }
 
         for (final Map.Entry<Integer, Integer> entry : opticalDuplicateClusterMap.entrySet()) {
@@ -203,7 +205,19 @@ public class OpticalDuplicateFinder extends ReadNameParser implements Serializab
 
             // If its not the first read we've seen for this cluster, mark it as an optical duplicate
             if (clusterToRepresentativeRead.containsKey(recordAssignedCluster) && recordIndex != keeperIndex) {
-                opticalDuplicateFlags[recordIndex] = true;
+                final PhysicalLocation currentMin = list.get(clusterToRepresentativeRead.get(recordAssignedCluster));
+                final PhysicalLocation test = list.get(recordIndex);
+
+                // If not in the keeper cluster, then keep the minX -> minY valued duplicate (note the tile must be equal for reads to cluster together)
+                if ((keeperIndex < 0 || recordAssignedCluster != keeperCluster) && // checking we don't accidentally set the keeper as an optical duplicate
+                        (test.getX() < currentMin.getX() || (test.getX() == currentMin.getX() && test.getY() < currentMin.getY()))) {
+                    // Mark the old min as a duplicate, and save the new min
+                    opticalDuplicateFlags[clusterToRepresentativeRead.get(recordAssignedCluster)] = true;
+                    clusterToRepresentativeRead.put(recordAssignedCluster, recordIndex);
+                } else {
+                    // If a smaller read has already been visited, mark the test read as an optical duplicate
+                    opticalDuplicateFlags[recordIndex] = true;
+                }
             } else {
                 clusterToRepresentativeRead.put(recordAssignedCluster, recordIndex);
             }

@@ -76,7 +76,7 @@ public class OpticalDuplicateFinderTest {
                 loc(7,   10,   10)
         );
 
-        assertEquals(finder.findOpticalDuplicates(locs, null       ), new boolean[] {false, true,  false, true, false, false});
+        assertEquals(finder.findOpticalDuplicates(locs, null       ), new boolean[] {true, true,  false, false, false, false});
         assertEquals(finder.findOpticalDuplicates(locs, locs.get(0)), new boolean[] {false, true,  false, true, false, false});
         assertEquals(finder.findOpticalDuplicates(locs, locs.get(1)), new boolean[] {true,  false, false, true, false, false});
         assertEquals(finder.findOpticalDuplicates(locs, locs.get(3)), new boolean[] {true,  true,  false, false, false, false});
@@ -170,6 +170,35 @@ public class OpticalDuplicateFinderTest {
 
         Assert.assertEquals(countTrue(finder.findOpticalDuplicates(locs, locs.get(0))), 4);
         Assert.assertEquals(countTrue(finder.findOpticalDuplicates(locsReordered, locsReordered.get(0))), 4);
+    }
+
+    @Test
+    public void testKeeperOrderIndependenceTwoDistinctClusters() {
+        final OpticalDuplicateFinder finder = new OpticalDuplicateFinder(OpticalDuplicateFinder.DEFAULT_READ_NAME_REGEX, 100, null);
+        final List<PhysicalLocation> locs = Arrays.asList(
+                loc(1, 100, 190),
+                loc(1, 100, 280),
+                // A second cluster of reads that should result in 3 extra optical duplicates
+                loc(1, 300, 500),
+                loc(1, 300, 590),
+                loc(1, 300, 670),
+                loc(1, 300, 760)
+        );
+        // Reordered the second cluster from the keeper cluster so they will not be grouped together
+        final List<PhysicalLocation> locsReordered = Arrays.asList(
+                loc(1, 100, 190),
+                loc(1, 100, 280),
+                loc(1, 300, 590),
+                loc(1, 300, 760),
+                loc(1, 300, 670),
+                loc(1, 300, 500)
+        );
+
+        // In both cases we expect "loc(1, 300, 500)" to be the non-optical-duplicate
+        Assert.assertEquals(countTrue(finder.findOpticalDuplicates(locs, locs.get(0))), 4);
+        Assert.assertFalse(finder.findOpticalDuplicates(locs, locs.get(0))[2]);
+        Assert.assertEquals(countTrue(finder.findOpticalDuplicates(locsReordered, locsReordered.get(0))), 4);
+        Assert.assertFalse(finder.findOpticalDuplicates(locsReordered, locs.get(0))[5]);
     }
 
     @Test
