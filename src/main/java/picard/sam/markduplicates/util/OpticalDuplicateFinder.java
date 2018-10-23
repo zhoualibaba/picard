@@ -209,7 +209,7 @@ public class OpticalDuplicateFinder extends ReadNameParser implements Serializab
                 final PhysicalLocation test = list.get(recordIndex);
 
                 // If not in the keeper cluster, then keep the minX -> minY valued duplicate (note the tile must be equal for reads to cluster together)
-                if ((keeperIndex < 0 || recordAssignedCluster != keeperCluster) && // checking we don't accidentally set the keeper as an optical duplicate
+                if ((keeperCluster == null || recordAssignedCluster != keeperCluster) && // checking we don't accidentally set the keeper as an optical duplicate
                         (test.getX() < currentMin.getX() || (test.getX() == currentMin.getX() && test.getY() < currentMin.getY()))) {
                     // Mark the old min as a duplicate, and save the new min
                     opticalDuplicateFlags[clusterToRepresentativeRead.get(recordAssignedCluster)] = true;
