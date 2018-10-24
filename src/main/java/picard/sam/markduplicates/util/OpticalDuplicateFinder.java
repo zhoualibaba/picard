@@ -165,6 +165,7 @@ public class OpticalDuplicateFinder extends ReadNameParser implements Serializab
             if (keeper == thisLoc) {
                 keeperIndex = i;
             }
+            opticalDistanceRelationGraph.addNode(i);
             for (int j = i + 1; j < length; j++) {
                 PhysicalLocation other = list.get(j);
                 // The main point of adding this log and if statement (also below) is a workaround a bug in the JVM
@@ -209,7 +210,7 @@ public class OpticalDuplicateFinder extends ReadNameParser implements Serializab
                 final PhysicalLocation currentRecordLoc = list.get(recordIndex);
 
                 // If not in the keeper cluster, then keep the minX -> minY valued duplicate (note the tile must be equal for reads to cluster together)
-                if (!(keeperCluster != null && recordAssignedCluster == keeperCluster) && // checking we don't accidentally set the keeper as an optical duplicate
+                if (!(keeperIndex >= 0 && recordAssignedCluster == keeperCluster) && // checking we don't accidentally set the keeper as an optical duplicate
                         (currentRecordLoc.getX() < representativeLoc.getX() || (currentRecordLoc.getX() == representativeLoc.getX() && currentRecordLoc.getY() < representativeLoc.getY()))) {
                     // Mark the old min as an optical duplicate, and save the new min
                     opticalDuplicateFlags[clusterToRepresentativeRead.get(recordAssignedCluster)] = true;
