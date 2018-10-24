@@ -205,13 +205,13 @@ public class OpticalDuplicateFinder extends ReadNameParser implements Serializab
 
             // If its not the first read we've seen for this cluster, mark it as an optical duplicate
             if (clusterToRepresentativeRead.containsKey(recordAssignedCluster) && recordIndex != keeperIndex) {
-                final PhysicalLocation currentMin = list.get(clusterToRepresentativeRead.get(recordAssignedCluster));
-                final PhysicalLocation test = list.get(recordIndex);
+                final PhysicalLocation representativeLoc = list.get(clusterToRepresentativeRead.get(recordAssignedCluster));
+                final PhysicalLocation currentRecordLoc = list.get(recordIndex);
 
                 // If not in the keeper cluster, then keep the minX -> minY valued duplicate (note the tile must be equal for reads to cluster together)
-                if ((keeperCluster == null || recordAssignedCluster != keeperCluster) && // checking we don't accidentally set the keeper as an optical duplicate
-                        (test.getX() < currentMin.getX() || (test.getX() == currentMin.getX() && test.getY() < currentMin.getY()))) {
-                    // Mark the old min as a duplicate, and save the new min
+                if (!(keeperCluster != null && recordAssignedCluster == keeperCluster) && // checking we don't accidentally set the keeper as an optical duplicate
+                        (currentRecordLoc.getX() < representativeLoc.getX() || (currentRecordLoc.getX() == representativeLoc.getX() && currentRecordLoc.getY() < representativeLoc.getY()))) {
+                    // Mark the old min as an optical duplicate, and save the new min
                     opticalDuplicateFlags[clusterToRepresentativeRead.get(recordAssignedCluster)] = true;
                     clusterToRepresentativeRead.put(recordAssignedCluster, recordIndex);
                 } else {
